@@ -82,14 +82,27 @@ export default function RosterList({
           <div style={{ 
             padding: '2rem 1rem', 
             textAlign: 'center',
-            color: '#666'
+            color: '#666',
+            backgroundColor: '#f8f9fa',
+            borderRadius: '8px',
+            margin: '1rem'
           }}>
-            <p style={{ margin: '0 0 0.5rem 0', fontWeight: '500' }}>
-              No rosters yet
+            <div style={{ fontSize: '3rem', marginBottom: '1rem' }}>📋</div>
+            <h3 style={{ margin: '0 0 0.5rem 0', fontWeight: '600', color: '#333' }}>
+              No Rosters Created Yet
+            </h3>
+            <p style={{ margin: '0 0 1rem 0', fontSize: '0.9rem' }}>
+              Get started by creating your first class roster
             </p>
-            <p style={{ margin: 0, fontSize: '0.9rem' }}>
-              Create your first roster to get started
-            </p>
+            <div style={{ 
+              padding: '0.5rem 1rem', 
+              backgroundColor: '#e3f2fd', 
+              borderRadius: '4px',
+              fontSize: '0.8rem',
+              color: '#1976d2'
+            }}>
+              💡 Click the "+ New Roster" button above to begin
+            </div>
           </div>
         ) : (
           rosters.map((roster) => (

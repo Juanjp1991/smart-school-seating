@@ -1,7 +1,8 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import { Student, dbService } from '@/lib/db'
+import { useDisplayOptionsContext } from '@/contexts/DisplayOptionsContext'
 
 interface StudentModalProps {
   isOpen: boolean
@@ -23,13 +24,20 @@ export default function StudentModal({
   const [firstName, setFirstName] = useState('')
   const [lastName, setLastName] = useState('')
   const [studentId, setStudentId] = useState('')
+  const [photo, setPhoto] = useState<string | null>(null)
+  const [photoFile, setPhotoFile] = useState<File | null>(null)
+  const [ratings, setRatings] = useState<Record<string, number | undefined>>({})
   const [errors, setErrors] = useState<{
     firstName?: string
     lastName?: string
     studentId?: string
+    photo?: string
+    ratings?: string
     general?: string
   }>({})
   const [isLoading, setIsLoading] = useState(false)
+  const fileInputRef = useRef<HTMLInputElement>(null)
+  const { options } = useDisplayOptionsContext()
 
   useEffect(() => {
     if (isOpen) {
@@ -37,14 +45,62 @@ export default function StudentModal({
         setFirstName(existingStudent.first_name)
         setLastName(existingStudent.last_name)
         setStudentId(existingStudent.student_id || '')
+        setPhoto(existingStudent.photo)
+        setRatings(existingStudent.ratings || {})
       } else {
         setFirstName('')
         setLastName('')
         setStudentId('')
+        setPhoto(null)
+        setPhotoFile(null)
+        setRatings({})
       }
       setErrors({})
     }
   }, [isOpen, existingStudent])
+
+  const handlePhotoChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0]
+    if (file) {
+      // Validate file type
+      if (!file.type.startsWith('image/')) {
+        setErrors(prev => ({ ...prev, photo: 'Please select an image file' }))
+        return
+      }
+      
+      // Validate file size (max 5MB)
+      if (file.size > 5 * 1024 * 1024) {
+        setErrors(prev => ({ ...prev, photo: 'Image must be less than 5MB' }))
+        return
+      }
+
+      setPhotoFile(file)
+      setErrors(prev => ({ ...prev, photo: undefined }))
+
+      // Create preview
+      const reader = new FileReader()
+      reader.onload = (e) => {
+        setPhoto(e.target?.result as string)
+      }
+      reader.readAsDataURL(file)
+    }
+  }
+
+  const handlePhotoRemove = () => {
+    setPhoto(null)
+    setPhotoFile(null)
+    if (fileInputRef.current) {
+      fileInputRef.current.value = ''
+    }
+  }
+
+  const handleRatingChange = (category: string, value: number | undefined) => {
+    setRatings(prev => ({
+      ...prev,
+      [category]: value
+    }))
+    setErrors(prev => ({ ...prev, ratings: undefined }))
+  }
 
   const validateForm = async (): Promise<boolean> => {
     const newErrors: typeof errors = {}
@@ -99,12 +155,23 @@ export default function StudentModal({
       const trimmedLastName = lastName.trim()
       const trimmedStudentId = studentId.trim() || null
 
+      let finalPhoto = photo
+      
+      // Handle photo upload if new file selected
+      if (photoFile) {
+        // In a real app, you'd upload to a server here
+        // For now, we'll use the data URL
+        finalPhoto = photo
+      }
+
       if (existingStudent) {
         // Update existing student
         const updatedStudent = await dbService.updateStudent(existingStudent.id, {
           first_name: trimmedFirstName,
           last_name: trimmedLastName,
-          student_id: trimmedStudentId
+          student_id: trimmedStudentId,
+          photo: finalPhoto,
+          ratings: ratings
         })
         await onSave(updatedStudent)
       } else {
@@ -113,7 +180,9 @@ export default function StudentModal({
           first_name: trimmedFirstName,
           last_name: trimmedLastName,
           student_id: trimmedStudentId,
-          roster_id: rosterId
+          roster_id: rosterId,
+          photo: finalPhoto,
+          ratings: ratings
         })
         await onSave(newStudent)
       }
@@ -333,6 +402,145 @@ export default function StudentModal({
               }}>
                 Must be unique within this roster if provided
               </div>
+            </div>
+
+            {/* Photo Upload */}
+            <div style={{ marginBottom: '1.5rem' }}>
+              <label style={{
+                display: 'block',
+                fontSize: '0.9rem',
+                fontWeight: '500',
+                color: '#333',
+                marginBottom: '0.5rem'
+              }}>
+                Student Photo (optional)
+              </label>
+              
+              {photo ? (
+                <div style={{ marginBottom: '1rem' }}>
+                  <img
+                    src={photo}
+                    alt="Student preview"
+                    style={{
+                      width: '100px',
+                      height: '100px',
+                      objectFit: 'cover',
+                      borderRadius: '8px',
+                      border: '2px solid #e0e0e0'
+                    }}
+                  />
+                  <button
+                    type="button"
+                    onClick={handlePhotoRemove}
+                    disabled={isLoading}
+                    style={{
+                      marginLeft: '1rem',
+                      padding: '0.5rem 1rem',
+                      border: '1px solid #dc3545',
+                      borderRadius: '4px',
+                      backgroundColor: '#dc3545',
+                      color: 'white',
+                      fontSize: '0.8rem',
+                      cursor: isLoading ? 'not-allowed' : 'pointer'
+                    }}
+                  >
+                    Remove Photo
+                  </button>
+                </div>
+              ) : (
+                <div>
+                  <input
+                    ref={fileInputRef}
+                    type="file"
+                    accept="image/*"
+                    onChange={handlePhotoChange}
+                    disabled={isLoading}
+                    style={{
+                      width: '100%',
+                      padding: '0.75rem',
+                      border: `1px solid ${errors.photo ? '#f56565' : '#e0e0e0'}`,
+                      borderRadius: '4px',
+                      fontSize: '0.9rem',
+                      backgroundColor: isLoading ? '#f5f5f5' : 'white',
+                      boxSizing: 'border-box'
+                    }}
+                  />
+                  {errors.photo && (
+                    <div style={{
+                      color: '#f56565',
+                      fontSize: '0.8rem',
+                      marginTop: '0.25rem'
+                    }}>
+                      {errors.photo}
+                    </div>
+                  )}
+                  <div style={{
+                    color: '#666',
+                    fontSize: '0.8rem',
+                    marginTop: '0.25rem'
+                  }}>
+                    Accepted formats: JPG, PNG, GIF (max 5MB)
+                  </div>
+                </div>
+              )}
+            </div>
+
+            {/* Ratings */}
+            <div style={{ marginBottom: '1.5rem' }}>
+              <label style={{
+                display: 'block',
+                fontSize: '0.9rem',
+                fontWeight: '500',
+                color: '#333',
+                marginBottom: '0.5rem'
+              }}>
+                Student Ratings (optional)
+              </label>
+              
+              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
+                {options.ratingCategories.map(category => (
+                  <div key={category}>
+                    <label style={{
+                      display: 'block',
+                      fontSize: '0.8rem',
+                      color: '#666',
+                      marginBottom: '0.25rem'
+                    }}>
+                      {category.charAt(0).toUpperCase() + category.slice(1)}
+                    </label>
+                    <select
+                      value={ratings[category] || ''}
+                      onChange={(e) => handleRatingChange(category, e.target.value ? parseInt(e.target.value) : undefined)}
+                      disabled={isLoading}
+                      style={{
+                        width: '100%',
+                        padding: '0.5rem',
+                        border: '1px solid #e0e0e0',
+                        borderRadius: '4px',
+                        fontSize: '0.9rem',
+                        backgroundColor: isLoading ? '#f5f5f5' : 'white'
+                      }}
+                    >
+                      <option value="">No rating</option>
+                      {[1, 2, 3, 4, 5].map(rating => (
+                        <option key={rating} value={rating}>
+                          {rating} - {rating === 1 ? 'Poor' : rating === 2 ? 'Fair' : rating === 3 ? 'Good' : rating === 4 ? 'Very Good' : 'Excellent'}
+                        </option>
+                      ))}
+                    </select>
+                  </div>
+                ))}
+              </div>
+              
+              {errors.ratings && (
+                <div style={{
+                  color: '#f56565',
+                  fontSize: '0.8rem',
+                  marginTop: '0.25rem'
+                }}>
+                  {errors.ratings}
+                </div>
+              )}
             </div>
           </div>
 

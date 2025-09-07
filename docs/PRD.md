@@ -64,8 +64,8 @@ Teachers invest significant time and effort in creating and managing classroom s
 - **Story 3.1 (Create Rule):** "As a teacher, I want to create a placement rule by selecting one or more students and defining a constraint (e.g., 'must not sit together'), so that I can codify my classroom management strategies."
 - **Story 3.2 (View Rules):** "As a teacher, I want to see a clear list of all the rules I've created for a class, so that I can easily review and manage them."
 - **Story 3.3 (Prioritize Rules):** "As a teacher, I want to be able to drag and re-order the rules in my list, so that I can tell the system which rules are most important to follow."
-- **Story 3.4 (Apply Rules):** "As a teacher, I want to press a button to automatically place students according to my prioritized rules, so that I can generate an optimized seating plan."
-- **Story 3.5 (Toggle Rule):** "As a teacher, I want to be able to temporarily disable a rule without deleting it, so that I can experiment with different seating arrangements."
+- **Story 3.4 (Apply Rules):** "As a teacher, I want to press a button to automatically place students according to my prioritized rules, so that I can generate an optimized seating plan." **[PLANNED FOR FUTURE IMPLEMENTATION]**
+- **Story 3.5 (Toggle Rule):** "As a teacher, I want to be able to temporarily disable a rule without deleting it, so that I can experiment with different seating arrangements." **[PLANNED FOR FUTURE IMPLEMENTATION]**
 
 ### 2.4. Feature: Toggleable Student Data Display
 - **Story 4.1 (Toggle Data On):** "As a teacher, I want to select specific data points from a display menu, so that I can see this information directly on the seating chart."

@@ -1,4 +1,5 @@
 import './globals.css'
+import { DisplayOptionsProvider } from '@/contexts/DisplayOptionsContext'
 
 export const metadata = {
   title: 'SmartSchool - Classroom Seating',
@@ -12,7 +13,11 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <body>{children}</body>
+      <body>
+        <DisplayOptionsProvider>
+          {children}
+        </DisplayOptionsProvider>
+      </body>
     </html>
   )
 }

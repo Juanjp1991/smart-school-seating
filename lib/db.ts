@@ -25,21 +25,40 @@ export interface Student {
   last_name: string
   student_id: string | null
   roster_id: string
+  photo: string | null
+  ratings: {
+    behavior?: number
+    academic?: number
+    participation?: number
+    [key: string]: number | undefined
+  }
   created_at: Date
   updated_at: Date
 }
 
 class DatabaseService {
   private dbName = 'SmartSchoolDB'
-  private version = 4
+  private version = 5
   private db: IDBDatabase | null = null
 
   async init(): Promise<void> {
     return new Promise((resolve, reject) => {
+      console.log('🗄️ Initializing database:', this.dbName, 'version:', this.version)
+      
+      if (typeof indexedDB === 'undefined') {
+        reject(new Error('IndexedDB is not supported in this browser'))
+        return
+      }
+      
       const request = indexedDB.open(this.dbName, this.version)
       
-      request.onerror = () => reject(request.error)
+      request.onerror = () => {
+        console.error('❌ Database initialization error:', request.error)
+        reject(request.error)
+      }
+      
       request.onsuccess = () => {
+        console.log('✅ Database initialized successfully')
         this.db = request.result
         resolve()
       }
@@ -76,6 +95,31 @@ class DatabaseService {
           store.createIndex('roster_id', 'roster_id', { unique: false })
           store.createIndex('priority', 'priority', { unique: false })
           store.createIndex('is_active', 'is_active', { unique: false })
+        }
+        
+        // Create display_preferences store (version 5)
+        if (oldVersion < 5 && !db.objectStoreNames.contains('display_preferences')) {
+          const store = db.createObjectStore('display_preferences', { keyPath: 'id' })
+          store.createIndex('user_id', 'user_id', { unique: false })
+        }
+        
+        // Migrate student data to include photo and ratings (version 5)
+        if (oldVersion < 5 && db.objectStoreNames.contains('students')) {
+          const transaction = (event.target as IDBOpenDBRequest).transaction!
+          const studentStore = transaction.objectStore('students')
+          
+          // Get all existing students and migrate them
+          const getRequest = studentStore.getAll()
+          
+          getRequest.onsuccess = () => {
+            const students = getRequest.result as Student[]
+            students.forEach((student: Student) => {
+              // Add default values for new fields
+              if (!student.photo) student.photo = null
+              if (!student.ratings) student.ratings = {}
+              studentStore.put(student)
+            })
+          }
         }
       }
     })
@@ -219,19 +263,30 @@ class DatabaseService {
     await this.ensureConnection()
     
     return new Promise((resolve, reject) => {
+      if (!this.db) {
+        reject(new Error('Database not initialized'))
+        return
+      }
+      
+      console.log('📋 Getting all rosters...')
       const transaction = this.db!.transaction(['rosters'], 'readonly')
       const store = transaction.objectStore('rosters')
       
       const request = store.getAll()
       
+      request.onerror = () => {
+        console.error('❌ Error getting rosters:', request.error)
+        reject(request.error)
+      }
+      
       request.onsuccess = () => {
+        console.log('✅ Successfully retrieved rosters:', request.result.length)
         // Sort by created_at descending (newest first)
         const rosters = request.result.sort((a: Roster, b: Roster) => 
           new Date(b.created_at).getTime() - new Date(a.created_at).getTime()
         )
         resolve(rosters)
       }
-      request.onerror = () => reject(request.error)
     })
   }
 
@@ -334,6 +389,8 @@ class DatabaseService {
       const fullStudent: Student = {
         ...student,
         id,
+        photo: student.photo || null,
+        ratings: student.ratings || {},
         created_at: now,
         updated_at: now
       }
@@ -382,7 +439,7 @@ class DatabaseService {
     })
   }
 
-  async updateStudent(id: string, updates: Partial<Pick<Student, 'first_name' | 'last_name' | 'student_id'>>): Promise<Student> {
+  async updateStudent(id: string, updates: Partial<Pick<Student, 'first_name' | 'last_name' | 'student_id' | 'photo' | 'ratings'>>): Promise<Student> {
     await this.ensureConnection()
     
     return new Promise(async (resolve, reject) => {
@@ -413,6 +470,14 @@ class DatabaseService {
       
       getRequest.onerror = () => reject(getRequest.error)
     })
+  }
+
+  async updateStudentPhoto(studentId: string, photoBase64: string): Promise<Student> {
+    return this.updateStudent(studentId, { photo: photoBase64 })
+  }
+
+  async updateStudentRatings(studentId: string, ratings: Student['ratings']): Promise<Student> {
+    return this.updateStudent(studentId, { ratings })
   }
 
   async deleteStudent(id: string): Promise<void> {
@@ -497,6 +562,8 @@ class DatabaseService {
         const student: Student = {
           ...studentData,
           id,
+          photo: studentData.photo || null,
+          ratings: studentData.ratings || {},
           created_at: now,
           updated_at: now
         }
@@ -594,7 +661,9 @@ class DatabaseService {
           first_name: student.firstName.trim(),
           last_name: student.lastName.trim(),
           student_id: student.studentId ? student.studentId.trim() : null,
-          roster_id: rosterId
+          roster_id: rosterId,
+          photo: null,
+          ratings: {}
         })
       }
     }

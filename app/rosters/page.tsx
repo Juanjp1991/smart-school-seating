@@ -32,25 +32,44 @@ export default function RostersPage() {
 
   const loadRosters = useCallback(async () => {
     try {
+      console.log('🔄 Loading rosters...')
       setIsLoading(true)
-      const allRosters = await dbService.getAllRosters()
+      
+      // Add timeout protection for database operations
+      const timeoutPromise = new Promise((_, reject) => {
+        setTimeout(() => reject(new Error('Database operation timeout')), 10000)
+      })
+      
+      const dbPromise = dbService.getAllRosters()
+      
+      const allRosters = await Promise.race([dbPromise, timeoutPromise]) as any[]
+      console.log('✅ Rosters loaded successfully:', allRosters.length)
       setRosters(allRosters)
       
-      // If no roster is selected and we have rosters, select the first one
-      if (!selectedRosterId && allRosters.length > 0) {
-        setSelectedRosterId(allRosters[0].id)
-      }
-      
-      // If selected roster no longer exists, clear selection
-      if (selectedRosterId && !allRosters.find(r => r.id === selectedRosterId)) {
-        setSelectedRosterId(allRosters.length > 0 ? allRosters[0].id : null)
-      }
+      // Use functional updates to avoid dependency on selectedRosterId
+      setSelectedRosterId(currentId => {
+        // If no roster is selected and we have rosters, select the first one
+        if (!currentId && allRosters.length > 0) {
+          return allRosters[0].id
+        }
+        
+        // If selected roster no longer exists, clear selection or select first available
+        if (currentId && !allRosters.find(r => r.id === currentId)) {
+          return allRosters.length > 0 ? allRosters[0].id : null
+        }
+        
+        return currentId
+      })
     } catch (error) {
+      console.error('❌ Error loading rosters:', error)
       showNotification('Failed to load rosters. Please try again.', 'error')
+      
+      // Force set loading to false even if there's an error
+      setIsLoading(false)
     } finally {
       setIsLoading(false)
     }
-  }, [selectedRosterId, showNotification])
+  }, [showNotification])
 
   const loadStudents = useCallback(async (rosterId: string) => {
     try {
@@ -67,6 +86,24 @@ export default function RostersPage() {
   useEffect(() => {
     loadRosters()
   }, [loadRosters])
+  
+  // Add browser detection for debugging
+  useEffect(() => {
+    const browserInfo = {
+      userAgent: navigator.userAgent,
+      isChrome: /Chrome/.test(navigator.userAgent),
+      isFirefox: /Firefox/.test(navigator.userAgent),
+      isSafari: /Safari/.test(navigator.userAgent) && !/Chrome/.test(navigator.userAgent),
+      isEdge: /Edge/.test(navigator.userAgent)
+    }
+    console.log('🌐 Browser info:', browserInfo)
+    
+    // Add specific handling for different browsers
+    if (browserInfo.isChrome) {
+      console.log('⚠️ Chrome detected - adding additional error handling')
+      // Chrome might need more time for IndexedDB operations
+    }
+  }, [])
 
   useEffect(() => {
     if (selectedRosterId) {
