@@ -1,5 +1,6 @@
 import { FurnitureItem } from '@/components/layout/types'
 import { Rule } from '@/types/rule'
+import { generateId } from './uuid'
 
 export interface Layout {
   id: string
@@ -186,7 +187,7 @@ class DatabaseService {
       const store = transaction.objectStore('layouts')
       
       // Generate UUID for the layout
-      const id = crypto.randomUUID()
+      const id = generateId()
       const now = new Date()
       
       const fullLayout: Layout = {
@@ -289,7 +290,7 @@ class DatabaseService {
       const store = transaction.objectStore('rosters')
       
       // Generate UUID for the roster
-      const id = crypto.randomUUID()
+      const id = generateId()
       const now = new Date()
       
       const fullRoster: Roster = {
@@ -430,7 +431,7 @@ class DatabaseService {
       const store = transaction.objectStore('students')
       
       // Generate UUID for the student
-      const id = crypto.randomUUID()
+      const id = generateId()
       const now = new Date()
       
       const fullStudent: Student = {
@@ -603,7 +604,7 @@ class DatabaseService {
       let hasError = false
       
       students.forEach((studentData, index) => {
-        const id = crypto.randomUUID()
+        const id = generateId()
         const now = new Date()
         
         const student: Student = {
@@ -726,7 +727,7 @@ class DatabaseService {
       const transaction = this.db!.transaction(['rules'], 'readwrite')
       const store = transaction.objectStore('rules')
       
-      const id = crypto.randomUUID()
+      const id = generateId()
       const now = new Date()
       
       const fullRule: Rule = {
