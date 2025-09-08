@@ -38,8 +38,9 @@ export interface Student {
 
 class DatabaseService {
   private dbName = 'SmartSchoolDB'
-  private version = 5
+  private version = 7
   private db: IDBDatabase | null = null
+  private initPromise: Promise<void> | null = null
 
   async init(): Promise<void> {
     return new Promise((resolve, reject) => {
@@ -50,39 +51,52 @@ class DatabaseService {
         return
       }
       
+      // Add timeout to prevent hanging
+      const timeout = setTimeout(() => {
+        console.error('⏰ Database initialization timeout')
+        reject(new Error('Database initialization timeout - this might be due to a corrupt database. Try clearing browser data.'))
+      }, 10000) // 10 second timeout
+      
       const request = indexedDB.open(this.dbName, this.version)
       
       request.onerror = () => {
+        clearTimeout(timeout)
         console.error('❌ Database initialization error:', request.error)
         reject(request.error)
       }
       
       request.onsuccess = () => {
+        clearTimeout(timeout)
         console.log('✅ Database initialized successfully')
         this.db = request.result
         resolve()
       }
       
       request.onupgradeneeded = (event) => {
+        console.log('🔄 Database upgrade needed')
         const db = request.result
         const oldVersion = (event as IDBVersionChangeEvent).oldVersion
+        console.log(`📊 Upgrading database from version ${oldVersion} to ${this.version}`)
         
         // Create layouts store if it doesn't exist (version 1)
         if (!db.objectStoreNames.contains('layouts')) {
+          console.log('📝 Creating layouts store')
           const store = db.createObjectStore('layouts', { keyPath: 'id' })
           store.createIndex('name', 'name', { unique: false })
           store.createIndex('created_at', 'created_at', { unique: false })
         }
         
         // Create rosters store (version 2)
-        if (oldVersion < 2 && !db.objectStoreNames.contains('rosters')) {
+        if (!db.objectStoreNames.contains('rosters')) {
+          console.log('📋 Creating rosters store')
           const store = db.createObjectStore('rosters', { keyPath: 'id' })
           store.createIndex('name', 'name', { unique: false })
           store.createIndex('created_at', 'created_at', { unique: false })
         }
         
         // Create students store (version 3)
-        if (oldVersion < 3 && !db.objectStoreNames.contains('students')) {
+        if (!db.objectStoreNames.contains('students')) {
+          console.log('👥 Creating students store')
           const store = db.createObjectStore('students', { keyPath: 'id' })
           store.createIndex('roster_id', 'roster_id', { unique: false })
           store.createIndex('last_name', 'last_name', { unique: false })
@@ -90,7 +104,8 @@ class DatabaseService {
         }
         
         // Create rules store (version 4)
-        if (oldVersion < 4 && !db.objectStoreNames.contains('rules')) {
+        if (!db.objectStoreNames.contains('rules')) {
+          console.log('📏 Creating rules store')
           const store = db.createObjectStore('rules', { keyPath: 'id' })
           store.createIndex('roster_id', 'roster_id', { unique: false })
           store.createIndex('priority', 'priority', { unique: false })
@@ -98,27 +113,44 @@ class DatabaseService {
         }
         
         // Create display_preferences store (version 5)
-        if (oldVersion < 5 && !db.objectStoreNames.contains('display_preferences')) {
+        if (!db.objectStoreNames.contains('display_preferences')) {
+          console.log('⚙️ Creating display_preferences store')
           const store = db.createObjectStore('display_preferences', { keyPath: 'id' })
           store.createIndex('user_id', 'user_id', { unique: false })
         }
         
+        console.log('✅ Database upgrade completed successfully')
+        
         // Migrate student data to include photo and ratings (version 5)
         if (oldVersion < 5 && db.objectStoreNames.contains('students')) {
-          const transaction = (event.target as IDBOpenDBRequest).transaction!
-          const studentStore = transaction.objectStore('students')
-          
-          // Get all existing students and migrate them
-          const getRequest = studentStore.getAll()
-          
-          getRequest.onsuccess = () => {
-            const students = getRequest.result as Student[]
-            students.forEach((student: Student) => {
-              // Add default values for new fields
-              if (!student.photo) student.photo = null
-              if (!student.ratings) student.ratings = {}
-              studentStore.put(student)
-            })
+          console.log('🔄 Migrating student data for version 5')
+          try {
+            const transaction = (event.target as IDBOpenDBRequest).transaction!
+            const studentStore = transaction.objectStore('students')
+            
+            // Get all existing students and migrate them
+            const getRequest = studentStore.getAll()
+            
+            getRequest.onsuccess = () => {
+              console.log('✅ Student migration completed')
+              const students = getRequest.result as Student[]
+              students.forEach((student: Student) => {
+                // Add default values for new fields
+                if (!student.photo) student.photo = null
+                if (!student.ratings) student.ratings = {}
+                try {
+                  studentStore.put(student)
+                } catch (migrationError) {
+                  console.warn('⚠️ Failed to migrate student:', student.id, migrationError)
+                }
+              })
+            }
+            
+            getRequest.onerror = () => {
+              console.error('❌ Student migration failed:', getRequest.error)
+            }
+          } catch (migrationError) {
+            console.error('❌ Migration process failed:', migrationError)
           }
         }
       }
@@ -126,8 +158,23 @@ class DatabaseService {
   }
 
   private async ensureConnection(): Promise<void> {
-    if (!this.db) {
-      await this.init()
+    if (this.db) {
+      return
+    }
+    
+    if (this.initPromise) {
+      // If initialization is already in progress, wait for it
+      await this.initPromise
+      return
+    }
+    
+    // Start initialization and store the promise
+    this.initPromise = this.init()
+    try {
+      await this.initPromise
+    } finally {
+      // Clear the promise once it's resolved/rejected
+      this.initPromise = null
     }
   }
 
