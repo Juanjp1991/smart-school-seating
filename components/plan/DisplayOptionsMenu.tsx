@@ -3,7 +3,7 @@
 import React, { useState, useEffect, useCallback } from 'react'
 import { DisplayOptions } from '@/types/display'
 import { DisplayOptionsService } from '@/lib/displayOptionsService'
-import { RATING_CATEGORIES } from '@/types/display'
+import { RATING_CATEGORIES, DEFAULT_DISPLAY_OPTIONS } from '@/types/display'
 
 interface DisplayOptionsMenuProps {
   isOpen: boolean
@@ -18,13 +18,7 @@ export default function DisplayOptionsMenu({
   onOptionsChange, 
   anchorElement 
 }: DisplayOptionsMenuProps) {
-  const [options, setOptions] = useState<DisplayOptions>({
-    showPhoto: true,
-    showName: true,
-    showRatings: false,
-    ratingCategories: ['behavior', 'academic', 'participation'],
-    compactMode: false
-  })
+  const [options, setOptions] = useState<DisplayOptions>(DEFAULT_DISPLAY_OPTIONS)
   const [position, setPosition] = useState({ top: 0, left: 0 })
 
   const updatePosition = useCallback(() => {
@@ -196,35 +190,60 @@ export default function DisplayOptionsMenu({
           </div>
         )}
 
-        {/* Display Mode Section */}
+        {/* Simple View Section */}
         <div>
-          <h4 className="text-sm font-medium text-gray-700 mb-2">Display Mode</h4>
+          <h4 className="text-sm font-medium text-gray-700 mb-2">Quick View</h4>
           <div className="space-y-2">
             <label className="flex items-center space-x-2 cursor-pointer">
               <input
-                type="radio"
-                name="displayMode"
-                checked={!options.compactMode}
-                onChange={() => handleOptionChange('compactMode', false)}
-                className="text-blue-600 focus:ring-blue-500"
+                type="checkbox"
+                checked={options.simpleView}
+                onChange={(e) => handleOptionChange('simpleView', e.target.checked)}
+                className="rounded border-gray-300 text-blue-600 focus:ring-blue-500"
               />
-              <span className="text-sm text-gray-700">Standard</span>
-              <span className="text-xs text-gray-500">(Full information display)</span>
+              <span className="text-sm text-gray-700">Simple View</span>
+              <span className="text-xs text-gray-500">(Names only, hides photos and ratings)</span>
             </label>
-
-            <label className="flex items-center space-x-2 cursor-pointer">
-              <input
-                type="radio"
-                name="displayMode"
-                checked={options.compactMode}
-                onChange={() => handleOptionChange('compactMode', true)}
-                className="text-blue-600 focus:ring-blue-500"
-              />
-              <span className="text-sm text-gray-700">Compact</span>
-              <span className="text-xs text-gray-500">(Minimal display, name only)</span>
-            </label>
+            {options.simpleView && options.savedOptions && (
+              <div className="ml-6 p-2 bg-blue-50 rounded text-xs text-blue-700">
+                <div className="font-medium">Previous settings saved</div>
+                <div>Click "Simple View" again to restore your full display settings</div>
+              </div>
+            )}
           </div>
         </div>
+
+        {/* Display Mode Section */}
+        {!options.simpleView && (
+          <div>
+            <h4 className="text-sm font-medium text-gray-700 mb-2">Display Mode</h4>
+            <div className="space-y-2">
+              <label className="flex items-center space-x-2 cursor-pointer">
+                <input
+                  type="radio"
+                  name="displayMode"
+                  checked={!options.compactMode}
+                  onChange={() => handleOptionChange('compactMode', false)}
+                  className="text-blue-600 focus:ring-blue-500"
+                />
+                <span className="text-sm text-gray-700">Standard</span>
+                <span className="text-xs text-gray-500">(Full information display)</span>
+              </label>
+
+              <label className="flex items-center space-x-2 cursor-pointer">
+                <input
+                  type="radio"
+                  name="displayMode"
+                  checked={options.compactMode}
+                  onChange={() => handleOptionChange('compactMode', true)}
+                  className="text-blue-600 focus:ring-blue-500"
+                />
+                <span className="text-sm text-gray-700">Compact</span>
+                <span className="text-xs text-gray-500">(Minimal display, name only)</span>
+              </label>
+            </div>
+          </div>
+        )}
 
         {/* Action Buttons */}
         <div className="flex justify-between pt-4 border-t border-gray-200">

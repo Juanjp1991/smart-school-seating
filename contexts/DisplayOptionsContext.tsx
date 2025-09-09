@@ -5,10 +5,10 @@ import { DisplayOptions } from '@/types/display'
 import { useDisplayOptions } from '@/hooks/useDisplayOptions'
 
 interface DisplayOptionsContextType {
-  options: DisplayOptions
+  displayOptions: DisplayOptions
   isLoading: boolean
   error: string | null
-  updateOptions: (newOptions: Partial<DisplayOptions>) => Promise<void>
+  updateDisplayOptions: (newOptions: Partial<DisplayOptions>) => Promise<void>
   resetToDefaults: () => Promise<void>
   togglePhoto: () => Promise<void>
   toggleName: () => Promise<void>
@@ -19,6 +19,9 @@ interface DisplayOptionsContextType {
   removeRatingCategory: (category: string) => Promise<void>
   isRatingCategoryEnabled: (category: string) => boolean
   getActiveRatingCategories: (studentRatings: Record<string, number | undefined>) => string[]
+  toggleSimpleView: () => Promise<void>
+  exitSimpleView: () => Promise<void>
+  isSimpleViewActive: boolean
 }
 
 const DisplayOptionsContext = createContext<DisplayOptionsContextType | undefined>(undefined)

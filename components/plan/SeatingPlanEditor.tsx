@@ -4,6 +4,7 @@ import React, { useState, useEffect, useRef, useCallback } from 'react'
 import { useDisplayOptionsContext } from '@/contexts/DisplayOptionsContext'
 import DisplayOptionsMenu from '@/components/plan/DisplayOptionsMenu'
 import StudentCard from '@/components/plan/StudentCard'
+import { SimpleViewToggle } from '@/components/plan/SimpleViewToggle'
 import PlacementProgressModal from '@/components/plan/PlacementProgress'
 import PlacementResultsModal from '@/components/plan/PlacementResults'
 import { dbService } from '@/lib/db'
@@ -19,7 +20,7 @@ interface SeatingPlanEditorProps {
 }
 
 export default function SeatingPlanEditor({ layout, roster, onBack }: SeatingPlanEditorProps) {
-  const { options } = useDisplayOptionsContext()
+  const { displayOptions: options } = useDisplayOptionsContext()
   const [students, setStudents] = useState<Student[]>([])
   const [showDisplayMenu, setShowDisplayMenu] = useState(false)
   const [seatAssignments, setSeatAssignments] = useState<Record<string, { row: number; col: number }>>({})
@@ -238,6 +239,8 @@ export default function SeatingPlanEditor({ layout, roster, onBack }: SeatingPla
             </div>
 
             <div className="flex items-center space-x-4">
+              <SimpleViewToggle />
+              
               <button
                 ref={displayMenuButtonRef}
                 onClick={() => setShowDisplayMenu(!showDisplayMenu)}

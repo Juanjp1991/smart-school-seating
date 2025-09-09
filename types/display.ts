@@ -4,6 +4,8 @@ export interface DisplayOptions {
   showRatings: boolean
   ratingCategories: string[]
   compactMode: boolean
+  simpleView: boolean
+  savedOptions?: DisplayOptions
 }
 
 export interface DisplayPreferences {
@@ -49,7 +51,8 @@ export const DEFAULT_DISPLAY_OPTIONS: DisplayOptions = {
   showName: true,
   showRatings: false,
   ratingCategories: ['behavior', 'academic', 'participation'],
-  compactMode: false
+  compactMode: false,
+  simpleView: false
 }
 
 export const RATING_CATEGORIES = {

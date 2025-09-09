@@ -37,7 +37,7 @@ export default function StudentModal({
   }>({})
   const [isLoading, setIsLoading] = useState(false)
   const fileInputRef = useRef<HTMLInputElement>(null)
-  const { options } = useDisplayOptionsContext()
+  const { displayOptions } = useDisplayOptionsContext()
 
   useEffect(() => {
     if (isOpen) {
@@ -498,7 +498,7 @@ export default function StudentModal({
               </label>
               
               <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
-                {options.ratingCategories.map(category => (
+                {(displayOptions?.ratingCategories || []).map(category => (
                   <div key={category}>
                     <label style={{
                       display: 'block',

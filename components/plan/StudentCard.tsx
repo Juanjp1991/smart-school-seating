@@ -18,7 +18,7 @@ export default function StudentCard({
   isDragging = false 
 }: StudentCardProps) {
   const { student, displayOptions, position } = studentData
-  const { showPhoto, showName, showRatings, ratingCategories, compactMode } = displayOptions
+  const { showPhoto, showName, showRatings, ratingCategories, compactMode, simpleView } = displayOptions
 
   const getInitials = (firstName: string, lastName: string) => {
     return `${firstName.charAt(0).toUpperCase()}${lastName.charAt(0).toUpperCase()}`
@@ -50,8 +50,35 @@ export default function StudentCard({
   }
 
   const relevantRatings = ratingCategories.filter(category => 
-    student.ratings[category] !== undefined
+    student.ratings && student.ratings[category] !== undefined
   )
+
+  // Simple view - only show name, centered and clean
+  if (simpleView) {
+    return (
+      <div
+        onClick={onClick}
+        className={`
+          relative bg-white border-2 border-gray-200 rounded-lg p-4 
+          hover:border-blue-400 transition-colors cursor-pointer
+          ${isDragging ? 'opacity-50 shadow-lg' : 'shadow-sm'}
+          ${className}
+          flex items-center justify-center
+          min-h-[60px]
+        `}
+        style={{
+          gridColumn: position.col + 1,
+          gridRow: position.row + 1
+        }}
+      >
+        <div className="text-center">
+          <h3 className="font-semibold text-gray-900 text-sm">
+            {student.first_name} {student.last_name}
+          </h3>
+        </div>
+      </div>
+    )
+  }
 
   if (compactMode) {
     return (
@@ -140,7 +167,7 @@ export default function StudentCard({
         <div className="space-y-1 border-t border-gray-100 pt-2">
           {relevantRatings.map(category => (
             <div key={category}>
-              {getRatingDisplay(category, student.ratings[category])}
+              {getRatingDisplay(category, student.ratings?.[category])}
             </div>
           ))}
         </div>

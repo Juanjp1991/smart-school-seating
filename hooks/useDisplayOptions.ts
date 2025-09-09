@@ -83,6 +83,69 @@ export function useDisplayOptions() {
     return updateOptions({ ratingCategories: categories })
   }, [updateOptions])
 
+  // Simple view functionality
+  const toggleSimpleView = useCallback(async () => {
+    if (options.simpleView) {
+      // Exit simple view - restore saved options
+      if (options.savedOptions) {
+        const restoredOptions = {
+          ...options.savedOptions,
+          simpleView: false,
+          savedOptions: undefined
+        }
+        await updateOptions(restoredOptions)
+      } else {
+        // No saved options, use defaults
+        await updateOptions({
+          ...options,
+          simpleView: false,
+          savedOptions: undefined,
+          showPhoto: true,
+          showName: true,
+          showRatings: false,
+          compactMode: false
+        })
+      }
+    } else {
+      // Enter simple view - save current options and enable simple view
+      const savedOptions = { ...options }
+      const simpleViewOptions = {
+        ...options,
+        simpleView: true,
+        savedOptions,
+        showPhoto: false,
+        showRatings: false,
+        compactMode: true
+      }
+      await updateOptions(simpleViewOptions)
+    }
+  }, [options, updateOptions])
+
+  const exitSimpleView = useCallback(async () => {
+    if (options.savedOptions) {
+      // Restore saved options
+      const restoredOptions = {
+        ...options.savedOptions,
+        simpleView: false,
+        savedOptions: undefined
+      }
+      await updateOptions(restoredOptions)
+    } else {
+      // No saved options, use defaults
+      await updateOptions({
+        ...options,
+        simpleView: false,
+        savedOptions: undefined,
+        showPhoto: true,
+        showName: true,
+        showRatings: false,
+        compactMode: false
+      })
+    }
+  }, [options, updateOptions])
+
+  const isSimpleViewActive = options.simpleView
+
   // Add a rating category
   const addRatingCategory = useCallback((category: string) => {
     if (!options.ratingCategories.includes(category)) {
@@ -113,10 +176,10 @@ export function useDisplayOptions() {
   }, [options.ratingCategories])
 
   return {
-    options,
+    displayOptions: options,
     isLoading,
     error,
-    updateOptions,
+    updateDisplayOptions: updateOptions,
     resetToDefaults,
     togglePhoto,
     toggleName,
@@ -126,6 +189,9 @@ export function useDisplayOptions() {
     addRatingCategory,
     removeRatingCategory,
     isRatingCategoryEnabled,
-    getActiveRatingCategories
+    getActiveRatingCategories,
+    toggleSimpleView,
+    exitSimpleView,
+    isSimpleViewActive
   }
 }
