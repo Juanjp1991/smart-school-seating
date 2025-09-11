@@ -2,7 +2,7 @@
 
 import { Roster } from '@/lib/db'
 import RosterItem from './RosterItem'
-import { Button, Card } from '@/components/ui'
+import { Button, Card, LoadingSpinner, NoRostersEmptyState, Alert } from '@/components/ui'
 
 interface RosterListProps {
   rosters: Roster[]
@@ -46,23 +46,15 @@ export default function RosterList({
       <div className="flex-1 overflow-y-auto py-2">
         {isLoading ? (
           <div className="p-8 text-center text-gray-600">
-            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600 mx-auto mb-4"></div>
+            <LoadingSpinner size="md" className="mx-auto mb-4" />
             Loading rosters...
           </div>
         ) : rosters.length === 0 ? (
           <div className="m-4">
-            <Card className="text-center py-12">
-              <div className="text-6xl mb-4">📋</div>
-              <h3 className="text-lg font-semibold text-gray-900 mb-2">
-                No Rosters Created Yet
-              </h3>
-              <p className="text-gray-600 mb-4 text-sm">
-                Get started by creating your first class roster
-              </p>
-              <div className="bg-blue-50 border border-blue-200 rounded-md p-3 text-sm text-blue-800">
-                💡 Click the "+ New Roster" button above to begin
-              </div>
-            </Card>
+            <NoRostersEmptyState onCreateRoster={onCreateRoster} />
+            <Alert variant="info" className="mt-4">
+              💡 Click the &quot;+ New Roster&quot; button above to begin
+            </Alert>
           </div>
         ) : (
           <div className="space-y-1">
