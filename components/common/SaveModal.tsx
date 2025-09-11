@@ -1,6 +1,7 @@
 'use client'
 
 import { useState } from 'react'
+import { Modal, ModalBody, ModalFooter, Button, Input } from '@/components/ui'
 
 interface SaveModalProps {
   isOpen: boolean
@@ -44,66 +45,57 @@ export default function SaveModal({ isOpen, onClose, onSave, existingName }: Sav
     }
   }
 
-  if (!isOpen) return null
-
   return (
-    <div className="modal-overlay" onClick={handleClose}>
-      <div className="modal-content" onClick={(e) => e.stopPropagation()}>
-        <div className="modal-header">
-          <h2>Save Layout</h2>
-          {!isLoading && (
-            <button className="modal-close" onClick={handleClose} aria-label="Close">
-              ×
-            </button>
-          )}
-        </div>
-        
-        <form onSubmit={handleSubmit} className="modal-body" role="form">
-          <div className="form-group">
-            <label htmlFor="layout-name">Layout Name:</label>
-            <input
-              id="layout-name"
-              type="text"
-              value={layoutName}
-              onChange={(e) => setLayoutName(e.target.value)}
-              placeholder="Enter a name for this layout"
-              disabled={isLoading}
-              autoFocus
-              maxLength={50}
-            />
-          </div>
-          
-          {error && (
-            <div className="error-message" role="alert">
-              {error}
-            </div>
-          )}
+    <Modal
+      isOpen={isOpen}
+      onClose={handleClose}
+      title="Save Layout"
+      size="md"
+      closeOnEscape={!isLoading}
+      closeOnOverlayClick={!isLoading}
+    >
+      <form onSubmit={handleSubmit}>
+        <ModalBody>
+          <Input
+            label="Layout Name"
+            type="text"
+            value={layoutName}
+            onChange={(e) => setLayoutName(e.target.value)}
+            placeholder="Enter a name for this layout"
+            disabled={isLoading}
+            autoFocus
+            maxLength={50}
+            error={error}
+          />
           
           {existingName && (
-            <div className="warning-message">
-              A layout named &quot;{existingName}&quot; already exists. Saving will overwrite it.
+            <div className="mt-4 p-3 bg-yellow-50 border border-yellow-200 rounded-md">
+              <p className="text-sm text-yellow-800">
+                ⚠️ A layout named &quot;{existingName}&quot; already exists. Saving will overwrite it.
+              </p>
             </div>
           )}
-          
-          <div className="modal-actions">
-            <button
-              type="button"
-              onClick={handleClose}
-              disabled={isLoading}
-              className="button-secondary"
-            >
-              Cancel
-            </button>
-            <button
-              type="submit"
-              disabled={isLoading || !layoutName.trim()}
-              className="button-primary"
-            >
-              {isLoading ? 'Saving...' : 'Save Layout'}
-            </button>
-          </div>
-        </form>
-      </div>
-    </div>
+        </ModalBody>
+        
+        <ModalFooter>
+          <Button
+            type="button"
+            onClick={handleClose}
+            disabled={isLoading}
+            variant="secondary"
+          >
+            Cancel
+          </Button>
+          <Button
+            type="submit"
+            disabled={isLoading || !layoutName.trim()}
+            variant="primary"
+            isLoading={isLoading}
+          >
+            Save Layout
+          </Button>
+        </ModalFooter>
+      </form>
+    </Modal>
   )
 }

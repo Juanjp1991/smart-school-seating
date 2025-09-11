@@ -48,84 +48,38 @@ export default function RosterItem({
   return (
     <div
       onClick={onClick}
-      style={{
-        padding: '0.75rem 1rem',
-        margin: '0 0.5rem',
-        borderRadius: '6px',
-        cursor: 'pointer',
-        backgroundColor: isSelected ? '#e3f2fd' : 'transparent',
-        border: isSelected ? '1px solid #2196f3' : '1px solid transparent',
-        position: 'relative',
-        transition: 'all 0.2s ease'
-      }}
-      onMouseEnter={(e) => {
-        if (!isSelected) {
-          e.currentTarget.style.backgroundColor = '#f5f5f5'
+      className={`
+        p-3 mx-2 rounded-md cursor-pointer relative transition-all duration-200
+        ${isSelected 
+          ? 'bg-blue-50 border border-blue-300 text-blue-800' 
+          : 'border border-transparent hover:bg-gray-50'
         }
-      }}
-      onMouseLeave={(e) => {
-        if (!isSelected) {
-          e.currentTarget.style.backgroundColor = 'transparent'
-        }
-      }}
+      `}
     >
-      <div style={{ 
-        display: 'flex', 
-        justifyContent: 'space-between', 
-        alignItems: 'flex-start',
-        gap: '0.5rem'
-      }}>
-        <div style={{ flex: 1, minWidth: 0 }}>
-          <h3 style={{
-            margin: '0 0 0.25rem 0',
-            fontSize: '0.95rem',
-            fontWeight: '600',
-            color: isSelected ? '#1976d2' : '#333',
-            overflow: 'hidden',
-            textOverflow: 'ellipsis',
-            whiteSpace: 'nowrap'
-          }}>
+      <div className="flex justify-between items-start gap-2">
+        <div className="flex-1 min-w-0">
+          <h3 className={`
+            text-sm font-semibold mb-1 truncate
+            ${isSelected ? 'text-blue-800' : 'text-gray-900'}
+          `}>
             {roster.name}
           </h3>
-          <p style={{
-            margin: 0,
-            fontSize: '0.8rem',
-            color: '#666',
-            overflow: 'hidden',
-            textOverflow: 'ellipsis',
-            whiteSpace: 'nowrap'
-          }}>
+          <p className="text-xs text-gray-600 truncate">
             Created {formatDate(roster.created_at)}
           </p>
         </div>
 
         {/* Menu Button */}
-        <div style={{ position: 'relative' }}>
+        <div className="relative">
           <button
             onClick={handleMenuClick}
-            style={{
-              width: '24px',
-              height: '24px',
-              border: 'none',
-              backgroundColor: 'transparent',
-              cursor: 'pointer',
-              borderRadius: '4px',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              fontSize: '1rem',
-              color: '#666',
-              transition: 'all 0.2s ease'
-            }}
-            onMouseEnter={(e) => {
-              e.currentTarget.style.backgroundColor = '#e0e0e0'
-            }}
-            onMouseLeave={(e) => {
-              e.currentTarget.style.backgroundColor = 'transparent'
-            }}
+            className="w-8 h-8 flex items-center justify-center rounded hover:bg-gray-200 transition-colors text-gray-500 hover:text-gray-700"
             title="More options"
+            aria-label="More options"
           >
-            ⋯
+            <svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 5v.01M12 12v.01M12 19v.01M12 6a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2z" />
+            </svg>
           </button>
 
           {/* Dropdown Menu */}
@@ -133,72 +87,21 @@ export default function RosterItem({
             <>
               {/* Backdrop to close menu */}
               <div
-                style={{
-                  position: 'fixed',
-                  top: 0,
-                  left: 0,
-                  right: 0,
-                  bottom: 0,
-                  zIndex: 998
-                }}
+                className="fixed inset-0 z-40"
                 onClick={() => setShowMenu(false)}
               />
               
               {/* Menu */}
-              <div
-                style={{
-                  position: 'absolute',
-                  right: 0,
-                  top: '100%',
-                  backgroundColor: 'white',
-                  border: '1px solid #e0e0e0',
-                  borderRadius: '4px',
-                  boxShadow: '0 2px 8px rgba(0,0,0,0.1)',
-                  zIndex: 999,
-                  minWidth: '120px',
-                  overflow: 'hidden'
-                }}
-              >
+              <div className="absolute right-0 top-full mt-1 bg-white border border-gray-200 rounded-md shadow-lg z-50 min-w-[120px] overflow-hidden">
                 <button
                   onClick={handleEdit}
-                  style={{
-                    width: '100%',
-                    padding: '0.5rem 0.75rem',
-                    border: 'none',
-                    backgroundColor: 'transparent',
-                    textAlign: 'left',
-                    fontSize: '0.9rem',
-                    cursor: 'pointer',
-                    transition: 'background-color 0.2s ease'
-                  }}
-                  onMouseEnter={(e) => {
-                    e.currentTarget.style.backgroundColor = '#f5f5f5'
-                  }}
-                  onMouseLeave={(e) => {
-                    e.currentTarget.style.backgroundColor = 'transparent'
-                  }}
+                  className="w-full px-3 py-2 text-left text-sm hover:bg-gray-50 transition-colors"
                 >
                   Edit
                 </button>
                 <button
                   onClick={handleDelete}
-                  style={{
-                    width: '100%',
-                    padding: '0.5rem 0.75rem',
-                    border: 'none',
-                    backgroundColor: 'transparent',
-                    textAlign: 'left',
-                    fontSize: '0.9rem',
-                    cursor: 'pointer',
-                    color: '#dc3545',
-                    transition: 'background-color 0.2s ease'
-                  }}
-                  onMouseEnter={(e) => {
-                    e.currentTarget.style.backgroundColor = '#ffebee'
-                  }}
-                  onMouseLeave={(e) => {
-                    e.currentTarget.style.backgroundColor = 'transparent'
-                  }}
+                  className="w-full px-3 py-2 text-left text-sm text-red-600 hover:bg-red-50 transition-colors"
                 >
                   Delete
                 </button>

@@ -1,5 +1,4 @@
 import React from 'react'
-import { designTokens } from '@/styles/design-tokens'
 
 export interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
   variant?: 'primary' | 'secondary' | 'success' | 'warning' | 'error' | 'ghost'
