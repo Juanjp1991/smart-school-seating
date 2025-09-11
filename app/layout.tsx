@@ -1,5 +1,6 @@
 import './globals.css'
 import { DisplayOptionsProvider } from '@/contexts/DisplayOptionsContext'
+import { AuthProvider } from '@/contexts/AuthContext'
 
 export const metadata = {
   title: 'SmartSchool - Classroom Seating',
@@ -14,9 +15,11 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body suppressHydrationWarning={true}>
-        <DisplayOptionsProvider>
-          {children}
-        </DisplayOptionsProvider>
+        <AuthProvider>
+          <DisplayOptionsProvider>
+            {children}
+          </DisplayOptionsProvider>
+        </AuthProvider>
       </body>
     </html>
   )
