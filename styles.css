@@ -1,0 +1,689 @@
+/* Global styles included directly here instead of import */
+
+/* Additional styles for vanilla HTML/JS version */
+
+/* Navigation styles */
+nav {
+    background-color: white;
+    border-bottom: 1px solid #e5e7eb;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+/* Form styles for textareas */
+textarea {
+    width: 100%;
+    padding: 0.75rem;
+    border: 1px solid #d1d5db;
+    border-radius: 0.375rem;
+    font-size: 1rem;
+    font-family: inherit;
+    resize: vertical;
+    min-height: 200px;
+}
+
+textarea:focus {
+    outline: none;
+    border-color: #3b82f6;
+    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+}
+
+/* Utility classes */
+.flex {
+    display: flex;
+}
+
+.flex-1 {
+    flex: 1;
+}
+
+.items-center {
+    align-items: center;
+}
+
+.justify-between {
+    justify-content: space-between;
+}
+
+.justify-center {
+    justify-content: center;
+}
+
+.space-y-4 > * + * {
+    margin-top: 1rem;
+}
+
+.p-6 {
+    padding: 1.5rem;
+}
+
+.mb-6 {
+    margin-bottom: 1.5rem;
+}
+
+.text-2xl {
+    font-size: 1.5rem;
+    line-height: 2rem;
+}
+
+.font-bold {
+    font-weight: 700;
+}
+
+.font-semibold {
+    font-weight: 600;
+}
+
+.text-gray-900 {
+    color: #111827;
+}
+
+.text-gray-600 {
+    color: #4b5563;
+}
+
+.bg-gray-50 {
+    background-color: #f9fafb;
+}
+
+.bg-white {
+    background-color: white;
+}
+
+.shadow-sm {
+    box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+}
+
+.border-b {
+    border-bottom-width: 1px;
+}
+
+.max-w-7xl {
+    max-width: 80rem;
+}
+
+.mx-auto {
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.px-4 {
+    padding-left: 1rem;
+    padding-right: 1rem;
+}
+
+.h-16 {
+    height: 4rem;
+}
+
+.text-xl {
+    font-size: 1.25rem;
+    line-height: 1.75rem;
+}
+
+/* Roster item styles */
+.roster-item {
+    background: white;
+    border: 1px solid #e5e7eb;
+    border-radius: 0.5rem;
+    padding: 1.5rem;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    transition: all 0.2s;
+}
+
+.roster-item:hover {
+    border-color: #3b82f6;
+    box-shadow: 0 4px 6px rgba(59, 130, 246, 0.1);
+}
+
+.roster-item-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1rem;
+}
+
+.roster-item-title {
+    font-size: 1.25rem;
+    font-weight: 600;
+    color: #111827;
+    margin: 0;
+}
+
+.roster-item-count {
+    color: #6b7280;
+    font-size: 0.875rem;
+}
+
+.roster-item-actions {
+    display: flex;
+    gap: 0.5rem;
+}
+
+.roster-item-actions button {
+    padding: 0.5rem 1rem;
+    border: 1px solid #d1d5db;
+    border-radius: 0.375rem;
+    background: white;
+    color: #374151;
+    cursor: pointer;
+    font-size: 0.875rem;
+    transition: all 0.2s;
+}
+
+.roster-item-actions button:hover {
+    background-color: #f3f4f6;
+}
+
+.roster-item-actions .button-primary {
+    background-color: #3b82f6;
+    color: white;
+    border-color: #3b82f6;
+}
+
+.roster-item-actions .button-primary:hover {
+    background-color: #2563eb;
+}
+
+.roster-item-actions .button-danger {
+    background-color: #ef4444;
+    color: white;
+    border-color: #ef4444;
+}
+
+.roster-item-actions .button-danger:hover {
+    background-color: #dc2626;
+}
+
+/* Student card styles */
+.student-card {
+    background: #f8fafc;
+    border: 2px dashed #cbd5e1;
+    border-radius: 0.5rem;
+    padding: 1rem;
+    text-align: center;
+    min-height: 80px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.2s;
+    user-select: none;
+}
+
+.student-card.occupied {
+    background: #dbeafe;
+    border-color: #3b82f6;
+    border-style: solid;
+}
+
+.student-card.occupied:hover {
+    background: #bfdbfe;
+}
+
+.student-card:not(.occupied):hover {
+    background: #f1f5f9;
+    border-color: #94a3b8;
+}
+
+.student-name {
+    font-weight: 500;
+    color: #1e293b;
+}
+
+.empty-seat {
+    color: #64748b;
+    font-style: italic;
+}
+
+/* Plan editor specific styles */
+#seating-plan-content {
+    min-height: 400px;
+}
+
+.seating-grid {
+    display: grid;
+    gap: 1rem;
+    margin: 2rem 0;
+    justify-content: center;
+}
+
+.seating-grid .student-card {
+    min-width: 120px;
+}
+
+/* Loading states */
+.loading {
+    opacity: 0.7;
+    pointer-events: none;
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+    .toolbar {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 1rem;
+    }
+    
+    .toolbar-section {
+        justify-content: center;
+        flex-wrap: wrap;
+    }
+    
+    .page[data-page="layout-editor"] {
+        height: auto;
+    }
+    
+    .roster-item-header {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 1rem;
+    }
+    
+    .roster-item-actions {
+        justify-content: center;
+    }
+}
+
+/* Page visibility */
+.page {
+    display: none;
+}
+
+.page.active {
+    display: block !important;
+    opacity: 1 !important;
+}
+
+/* Only hide navbar on home page - not on all pages */
+body.home-active nav, 
+body.home-active .navbar, 
+body.home-active #top-navbar, 
+body.home-active header {
+    display: none !important;
+    visibility: hidden !important;
+    height: 0px !important;
+    min-height: 0px !important;
+    max-height: 0px !important;
+    padding: 0px !important;
+    margin: 0px !important;
+    border: none !important;
+    overflow: hidden !important;
+    position: absolute !important;
+    top: -10000px !important;
+    left: -10000px !important;
+    opacity: 0 !important;
+    z-index: -9999 !important;
+}
+
+/* Allow navbar and toolbars to show on other pages */
+body:not(.home-active) nav, 
+body:not(.home-active) .navbar, 
+body:not(.home-active) #top-navbar,
+body:not(.home-active) .bg-white.shadow-sm.border-b {
+    display: block !important;
+    visibility: visible !important;
+    position: static !important;
+    top: auto !important;
+    left: auto !important;
+    height: auto !important;
+    opacity: 1 !important;
+    z-index: auto !important;
+}
+
+/* Ensure home page starts from top with no gaps */
+#home-page {
+    margin-top: 0px !important;
+    padding-top: 2rem !important;
+}
+
+/* Ensure home page is always visible when body has home-active class */
+body.home-active #home-page {
+    display: block !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+}
+
+body {
+    padding-top: 0px !important;
+}
+
+/* Only show navbar on non-home pages */
+body:not(.home-active) nav,
+body:not(.home-active) #top-navbar {
+    display: block !important;
+    visibility: visible !important;
+    height: auto !important;
+    position: static !important;
+    top: auto !important;
+    left: auto !important;
+    opacity: 1 !important;
+    z-index: auto !important;
+    padding: initial !important;
+    margin: initial !important;
+    border: initial !important;
+}
+
+/* Hide toolbar on home page */
+body.home-active .toolbar {
+    display: none !important;
+    visibility: hidden !important;
+    height: 0px !important;
+    overflow: hidden !important;
+}
+
+/* Show toolbars on other pages */
+body:not(.home-active) .toolbar {
+    display: flex !important;
+    visibility: visible !important;
+    height: auto !important;
+}
+
+/* Grid cell styles for layout editor */
+.grid-cell {
+    border: 1px solid #d1d5db;
+    background-color: #f9fafb;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 16px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    user-select: none;
+    min-height: 30px;
+    min-width: 30px;
+}
+
+.grid-cell:hover {
+    background-color: #e5e7eb;
+    border-color: #9ca3af;
+}
+
+.grid-cell.seat {
+    background-color: #dbeafe;
+    border-color: #3b82f6;
+    border-width: 2px;
+}
+
+.grid-cell.seat:hover {
+    background-color: #bfdbfe;
+}
+
+.grid-cell.furniture-desk {
+    background-color: #fef3c7;
+    border-color: #f59e0b;
+    border-width: 2px;
+}
+
+.grid-cell.furniture-door {
+    background-color: #fed7aa;
+    border-color: #ea580c;
+    border-width: 2px;
+}
+
+.grid-cell.furniture-preview {
+    background-color: #f3f4f6;
+    border-color: #6b7280;
+    border-style: dashed;
+    opacity: 0.7;
+}
+
+.classroom-grid {
+    max-width: fit-content;
+    margin: 0 auto;
+}
+
+/* Modal styles */
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.5);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+    padding: 1rem;
+}
+
+.modal-content {
+    background: white;
+    border-radius: 0.5rem;
+    box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+    max-width: 90vw;
+    max-height: 90vh;
+    width: 100%;
+    max-width: 500px;
+    overflow-y: auto;
+}
+
+.modal-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 1.5rem 1.5rem 0 1.5rem;
+    border-bottom: 1px solid #e5e7eb;
+    margin-bottom: 0;
+    padding-bottom: 1rem;
+}
+
+.modal-header h2 {
+    font-size: 1.25rem;
+    font-weight: 600;
+    color: #111827;
+    margin: 0;
+}
+
+.modal-close {
+    background: none;
+    border: none;
+    font-size: 1.5rem;
+    cursor: pointer;
+    color: #6b7280;
+    padding: 0;
+    width: 2rem;
+    height: 2rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 0.25rem;
+}
+
+.modal-close:hover {
+    background-color: #f3f4f6;
+    color: #374151;
+}
+
+.modal-body {
+    padding: 1.5rem;
+}
+
+.modal-actions {
+    display: flex;
+    gap: 0.75rem;
+    justify-content: flex-end;
+    margin-top: 1.5rem;
+    padding-top: 1rem;
+    border-top: 1px solid #e5e7eb;
+}
+
+.form-group {
+    margin-bottom: 1rem;
+}
+
+.form-group label {
+    display: block;
+    font-weight: 500;
+    color: #374151;
+    margin-bottom: 0.5rem;
+    font-size: 0.875rem;
+}
+
+.form-group input,
+.form-group textarea,
+.form-group select {
+    width: 100%;
+    padding: 0.75rem;
+    border: 1px solid #d1d5db;
+    border-radius: 0.375rem;
+    font-size: 0.875rem;
+}
+
+.form-group input:focus,
+.form-group textarea:focus,
+.form-group select:focus {
+    outline: none;
+    border-color: #3b82f6;
+    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+}
+
+.button-primary {
+    background-color: #3b82f6;
+    color: white;
+    border: none;
+    padding: 0.5rem 1rem;
+    border-radius: 0.375rem;
+    font-size: 0.875rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.button-primary:hover {
+    background-color: #2563eb;
+}
+
+.button-secondary {
+    background-color: #f9fafb;
+    color: #374151;
+    border: 1px solid #d1d5db;
+    padding: 0.5rem 1rem;
+    border-radius: 0.375rem;
+    font-size: 0.875rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.button-secondary:hover {
+    background-color: #f3f4f6;
+}
+
+.button-danger {
+    background-color: #ef4444;
+    color: white;
+    border: none;
+    padding: 0.5rem 1rem;
+    border-radius: 0.375rem;
+    font-size: 0.875rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.button-danger:hover {
+    background-color: #dc2626;
+}
+
+.error-message {
+    background-color: #fee2e2;
+    color: #dc2626;
+    padding: 0.75rem;
+    border-radius: 0.375rem;
+    font-size: 0.875rem;
+    margin-top: 0.5rem;
+}
+
+/* Template and layout list styles */
+.template-list {
+    max-height: 400px;
+    overflow-y: auto;
+    border: 1px solid #e5e7eb;
+    border-radius: 0.5rem;
+}
+
+.template-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 1rem;
+    border-bottom: 1px solid #e5e7eb;
+}
+
+.template-item:last-child {
+    border-bottom: none;
+}
+
+.template-item:hover {
+    background-color: #f9fafb;
+}
+
+.template-info {
+    flex: 1;
+}
+
+.template-name {
+    font-weight: 600;
+    color: #111827;
+    margin: 0 0 0.25rem 0;
+}
+
+.template-details {
+    display: flex;
+    gap: 1rem;
+    font-size: 0.875rem;
+    color: #6b7280;
+}
+
+.template-load-button {
+    margin-left: 1rem;
+}
+
+.empty-state {
+    text-align: center;
+    padding: 2rem;
+    color: #6b7280;
+}
+
+.empty-state-subtitle {
+    font-size: 0.875rem;
+    margin-top: 0.5rem;
+    color: #9ca3af;
+}
+
+/* Hide all layout editor specific elements on home page */
+body.home-active #layout-editor .toolbar,
+body.home-active .tool-button,
+body.home-active .rotate-button,
+body.home-active .load-button,
+body.home-active .save-button,
+body.home-active .toolbar-section {
+    display: none !important;
+    visibility: hidden !important;
+    height: 0px !important;
+    overflow: hidden !important;
+}
+
+/* Show buttons and elements on other pages */
+body:not(.home-active) .toolbar-section {
+    display: flex !important;
+    visibility: visible !important;
+    height: auto !important;
+}
+
+body:not(.home-active) .tool-button,
+body:not(.home-active) .rotate-button,
+body:not(.home-active) .load-button,
+body:not(.home-active) .save-button {
+    display: inline-block !important;
+    visibility: visible !important;
+    height: auto !important;
+}
+
+/* Ensure only home page content shows when home is active */
+body.home-active .page:not(#home-page) {
+    display: none !important;
+    visibility: hidden !important;
+}
