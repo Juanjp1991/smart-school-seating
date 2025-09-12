@@ -8,7 +8,7 @@ customModes:
    groups:
     - read
     - - edit
-      - fileRegex: \.(md|css|scss|html|jsx|tsx)$
+      - fileRegex: \.(md|css|scss|html)$
         description: Design-related files
  - slug: bmad-sm
    name: '🏃 Scrum Master'
@@ -30,7 +30,7 @@ customModes:
    groups:
     - read
     - - edit
-      - fileRegex: \.(test|spec)\.(js|ts|jsx|tsx)$|\.md$
+      - fileRegex: \.(test|spec)\.(js|ts)$|\.md$
         description: Test files and documentation
  - slug: bmad-po
    name: '📝 Product Owner'

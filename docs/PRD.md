@@ -96,7 +96,7 @@ Markdown
 ## 1. High-Level Architecture
 
 - **Approach:** **Local-First Architecture**. All user data is stored exclusively in the user's browser via **IndexedDB**. The server is stateless and only serves the application files.
-- **Frontend:** **React** (using Next.js framework).
+- **Frontend:** **Vanilla HTML/CSS/JavaScript** (using Tailwind CSS for styling).
 - **Backend:** **Node.js** (using Express) - A minimal server for serving the static frontend application.
 - **Data Portability:** App data can be backed up and restored via a user-controlled **JSON Import/Export** feature.
 
@@ -115,32 +115,22 @@ Markdown
 
 ---
 
-## 3. Proposed Frontend File Structure (React/Next.js)
+## 3. Current Frontend File Structure (Vanilla JavaScript)
 
-/src
+/
 |
-|-- /app                  # Main application pages/routes (Next.js App Router)
-|   |-- /layout-editor    # View for creating/editing layouts
-|   |-- /rosters          # View for managing rosters and students
-|   |-- /plan-editor      # View for creating/editing seating plans
-|   |-- page.js           # The main entry point/dashboard
+|-- index.html            # Main HTML entry point
 |
-|-- /components           # Reusable UI elements
-|   |-- /common           # Generic: Button.js, Modal.js, Input.js
-|   |-- /layout           # Specific: Grid.js, FurnitureItem.js, LayoutToolbar.js
-|   |-- /roster           # Specific: StudentForm.js, CsvImportModal.js
-|   |-- /plan             # Specific: StudentCard.js, RuleBuilder.js
-|   |-- /ui               # App-level: MainLayout.js, Sidebar.js, Header.js
+|-- /js                   # JavaScript modules
+|   |-- app.js            # Main application controller
+|   |-- storage.js        # Local storage service
+|   |-- layout-editor.js  # Layout editing functionality
+|   |-- roster-manager.js # Roster management
+|   |-- plan-editor.js    # Seating plan generation
 |
-|-- /lib                  # Core application logic and services
-|   |-- db.js             # The IndexedDB service (all database logic)
-|   |-- placementAlgorithm.js # The core seating arrangement logic
-|   |-- exportService.js  # Logic for PDF and JSON export/import
+|-- styles.css            # Main stylesheet with Tailwind CSS
 |
-|-- /hooks                # Custom React hooks (e.g., useRosters, useLayouts)
-|
-|-- /styles               # Global CSS and styles
-|-- globals.css
+|-- README-vanilla.md     # Documentation for vanilla JS version
 
 
 ---

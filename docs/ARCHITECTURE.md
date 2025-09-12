@@ -9,7 +9,7 @@
 ## 1. High-Level Architecture
 
 - **Approach:** **Local-First Architecture**. All user data (layouts, students, rules) is stored exclusively in the user's browser via **IndexedDB**. The server is stateless.
-- **Frontend:** **React** (using Next.js).
+- **Frontend:** **Vanilla HTML/CSS/JavaScript** (using Tailwind CSS for styling).
 - **Backend:** **Node.js** (using Express) - To serve the static application files.
 - **Data Portability:** The app will include **Import/Export functionality** (JSON).
 
@@ -85,32 +85,20 @@
 
 ---
 
-## 3. Proposed Frontend File Structure (React/Next.js)
+## 3. Current Frontend File Structure (Vanilla JavaScript)
 
-/src
+/
 |
-|-- /app                  # Main application pages/routes
-|   |-- /layout-editor
-|   |-- /rosters
-|   |-- /plan-editor
-|   |-- page.js
+|-- index.html            # Main HTML entry point
 |
-|-- /components           # Reusable UI elements
-|   |-- /common           # Button.js, Modal.js, Input.js
-|   |-- /layout           # Grid.js, FurnitureItem.js, LayoutToolbar.js
-|   |-- /roster           # StudentForm.js, CsvImportModal.js
-|   |-- /plan             # StudentCard.js, RuleBuilder.js
-|   |-- /ui               # MainLayout.js, Header.js
+|-- /js                   # JavaScript modules
+|   |-- app.js            # Main application controller
+|   |-- storage.js        # Local storage service
+|   |-- layout-editor.js  # Layout editing functionality
+|   |-- roster-manager.js # Roster management
+|   |-- plan-editor.js    # Seating plan generation
 |
-|-- /lib                  # Core application logic
-|   |-- db.js             # IndexedDB service
-|   |-- placementAlgorithm.js
-|   |-- exportService.js
-|
-|-- /hooks                # Custom React hooks
-|
-|-- /styles               # Global CSS
-|-- globals.css
+|-- styles.css            # Main stylesheet with Tailwind CSS
 
 
 ---
