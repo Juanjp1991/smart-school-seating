@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Drag Test</title>
+    <style>
+        .test-container {
+            display: flex;
+            gap: 20px;
+            margin: 50px;
+        }
+        .draggable-card {
+            width: 120px;
+            height: 80px;
+            background: #dbeafe;
+            border: 2px solid #3b82f6;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: grab;
+            user-select: none;
+        }
+        .draggable-card.dragging {
+            opacity: 0.5;
+        }
+        .drop-target {
+            width: 120px;
+            height: 80px;
+            background: #f8fafc;
+            border: 2px dashed #cbd5e1;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .drop-target.drag-over {
+            background: #fef3c7;
+            border-color: #f59e0b;
+        }
+        .log {
+            margin: 20px;
+            padding: 10px;
+            background: #f0f0f0;
+            font-family: monospace;
+            height: 200px;
+            overflow-y: scroll;
+        }
+    </style>
+</head>
+<body>
+    <h1>Drag and Drop Test</h1>
+
+    <div class="test-container">
+        <div id="card1" class="draggable-card" draggable="true">
+            <span style="pointer-events: none;">Alice</span>
+        </div>
+        <div id="card2" class="draggable-card" draggable="true">
+            <span style="pointer-events: none;">Bob</span>
+        </div>
+        <div id="target" class="drop-target">
+            <span style="pointer-events: none;">Drop Zone</span>
+        </div>
+    </div>
+
+    <div id="log" class="log"></div>
+
+    <script>
+        function log(message) {
+            const logDiv = document.getElementById('log');
+            logDiv.innerHTML += new Date().toLocaleTimeString() + ': ' + message + '<br>';
+            logDiv.scrollTop = logDiv.scrollHeight;
+            console.log(message);
+        }
+
+        let dragData = null;
+
+        // Set up drag and drop
+        document.querySelectorAll('.draggable-card').forEach(card => {
+            card.addEventListener('dragstart', (e) => {
+                log('DRAGSTART: ' + e.target.textContent.trim());
+                dragData = {
+                    element: e.target,
+                    text: e.target.textContent.trim()
+                };
+                e.target.classList.add('dragging');
+                e.dataTransfer.effectAllowed = 'move';
+                e.dataTransfer.setData('text/plain', e.target.textContent.trim());
+            });
+
+            card.addEventListener('dragend', (e) => {
+                log('DRAGEND: ' + e.target.textContent.trim());
+                e.target.classList.remove('dragging');
+                document.querySelectorAll('.drag-over').forEach(el => el.classList.remove('drag-over'));
+                dragData = null;
+            });
+
+            card.addEventListener('dragover', (e) => {
+                e.preventDefault();
+                e.dataTransfer.dropEffect = 'move';
+                if (!e.target.classList.contains('dragging')) {
+                    e.target.classList.add('drag-over');
+                }
+            });
+
+            card.addEventListener('dragleave', (e) => {
+                e.target.classList.remove('drag-over');
+            });
+
+            card.addEventListener('drop', (e) => {
+                e.preventDefault();
+                e.target.classList.remove('drag-over');
+
+                if (dragData && dragData.element !== e.target) {
+                    log('DROP: Swapping ' + dragData.text + ' with ' + e.target.textContent.trim());
+
+                    // Swap the text content
+                    const targetText = e.target.querySelector('span').textContent;
+                    const dragText = dragData.element.querySelector('span').textContent;
+
+                    e.target.querySelector('span').textContent = dragText;
+                    dragData.element.querySelector('span').textContent = targetText;
+
+                    log('SWAP COMPLETE');
+                } else {
+                    log('DROP: Same element or no drag data');
+                }
+            });
+        });
+
+        // Also set up the drop target
+        const target = document.getElementById('target');
+        target.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            e.dataTransfer.dropEffect = 'move';
+            e.target.classList.add('drag-over');
+        });
+
+        target.addEventListener('dragleave', (e) => {
+            e.target.classList.remove('drag-over');
+        });
+
+        target.addEventListener('drop', (e) => {
+            e.preventDefault();
+            e.target.classList.remove('drag-over');
+
+            if (dragData) {
+                log('DROP: Moving ' + dragData.text + ' to drop zone');
+                target.querySelector('span').textContent = dragData.text;
+                dragData.element.querySelector('span').textContent = 'Empty';
+            }
+        });
+
+        log('Test initialized - try dragging cards');
+    </script>
+</body>
+</html>

@@ -239,9 +239,50 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 });
 
+// Dark mode functionality
+function initializeDarkMode() {
+    // Check if user has a preference in localStorage
+    const savedTheme = localStorage.getItem('theme');
+    const prefersDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+
+    // Set initial theme
+    if (savedTheme === 'dark' || (!savedTheme && prefersDark)) {
+        setDarkMode(true);
+    } else {
+        setDarkMode(false);
+    }
+}
+
+function setDarkMode(isDark) {
+    const html = document.documentElement;
+    const toggleIcon = document.getElementById('dark-mode-icon');
+
+    if (isDark) {
+        html.setAttribute('data-theme', 'dark');
+        toggleIcon.textContent = '☀️';
+        localStorage.setItem('theme', 'dark');
+    } else {
+        html.removeAttribute('data-theme');
+        toggleIcon.textContent = '🌙';
+        localStorage.setItem('theme', 'light');
+    }
+}
+
+function toggleDarkMode() {
+    const html = document.documentElement;
+    const isDark = html.getAttribute('data-theme') === 'dark';
+    setDarkMode(!isDark);
+}
+
+// Initialize dark mode when DOM is loaded
+document.addEventListener('DOMContentLoaded', () => {
+    initializeDarkMode();
+});
+
 // Export for global access
 window.showPage = showPage;
 window.showNotification = showNotification;
 window.hideNotification = hideNotification;
 window.formatDate = formatDate;
 window.generateId = generateId;
+window.toggleDarkMode = toggleDarkMode;
