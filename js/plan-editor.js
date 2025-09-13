@@ -14,7 +14,40 @@ class PlanEditor {
         this.selectedLayout = null;
         this.selectedRoster = null;
         this.currentSeatingPlan = null;
+
+        // Populate dropdowns with current data
+        this.populateLayoutSelect();
+        this.populateRosterSelect();
+
         this.updateContent();
+    }
+
+    populateLayoutSelect() {
+        const layouts = StorageService.getAllLayouts();
+        const select = document.getElementById('layout-select');
+        if (select) {
+            select.innerHTML = '<option value="">Select a Layout</option>';
+            layouts.forEach(layout => {
+                const option = document.createElement('option');
+                option.value = layout.id;
+                option.textContent = layout.name;
+                select.appendChild(option);
+            });
+        }
+    }
+
+    populateRosterSelect() {
+        const rosters = StorageService.getAllRosters();
+        const select = document.getElementById('roster-select');
+        if (select) {
+            select.innerHTML = '<option value="">Select a Roster</option>';
+            rosters.forEach(roster => {
+                const option = document.createElement('option');
+                option.value = roster.id;
+                option.textContent = roster.name;
+                select.appendChild(option);
+            });
+        }
     }
 
     loadLayoutForPlan() {
@@ -199,11 +232,41 @@ class PlanEditor {
                     // Render seat
                     if (assignedStudent) {
                         cell.className = 'student-card occupied';
-                        cell.innerHTML = `<span class="student-name">${assignedStudent}</span>`;
+                        cell.setAttribute('data-seat-key', seatKey);
+                        cell.setAttribute('data-student', assignedStudent);
+
+                        // Create student name span
+                        const studentSpan = document.createElement('span');
+                        studentSpan.className = 'student-name';
+                        studentSpan.textContent = assignedStudent;
+                        studentSpan.style.pointerEvents = 'none'; // Prevent span from interfering with drag
+                        cell.appendChild(studentSpan);
+
+                        // Make student draggable
+                        cell.draggable = true;
+                        cell.addEventListener('dragstart', (e) => this.handleDragStart(e, seatKey, assignedStudent));
+                        cell.addEventListener('dragover', (e) => this.handleDragOver(e));
+                        cell.addEventListener('drop', (e) => this.handleDrop(e, seatKey));
+                        cell.addEventListener('dragend', (e) => this.handleDragEnd(e));
+                        cell.addEventListener('dragleave', (e) => this.handleDragLeave(e));
+
                         cell.addEventListener('click', () => this.handleSeatClick(seatKey));
                     } else {
                         cell.className = 'student-card';
-                        cell.innerHTML = '<span class="empty-seat">Empty Seat</span>';
+                        cell.setAttribute('data-seat-key', seatKey);
+
+                        // Create empty seat span
+                        const emptySpan = document.createElement('span');
+                        emptySpan.className = 'empty-seat';
+                        emptySpan.textContent = 'Empty Seat';
+                        emptySpan.style.pointerEvents = 'none';
+                        cell.appendChild(emptySpan);
+
+                        // Make empty seat a drop target
+                        cell.addEventListener('dragover', (e) => this.handleDragOver(e));
+                        cell.addEventListener('drop', (e) => this.handleDrop(e, seatKey));
+                        cell.addEventListener('dragleave', (e) => this.handleDragLeave(e));
+
                         cell.addEventListener('click', () => this.handleSeatClick(seatKey));
                     }
                 } else {
@@ -218,11 +281,117 @@ class PlanEditor {
         }
     }
 
+    handleDragStart(e, seatKey, student) {
+        console.log('Drag start:', student, 'from', seatKey);
+
+        // Set up drag data
+        this.dragData = {
+            fromSeat: seatKey,
+            student: student
+        };
+
+        // Set up data transfer
+        e.dataTransfer.effectAllowed = 'move';
+        e.dataTransfer.setData('text/plain', student);
+        e.dataTransfer.setData('application/json', JSON.stringify(this.dragData));
+
+        // Add visual feedback
+        e.target.classList.add('dragging');
+
+        // Don't prevent default or stop propagation for dragstart
+        console.log('Drag data set:', this.dragData);
+    }
+
+    handleDragOver(e) {
+        e.preventDefault();
+        e.stopPropagation();
+        e.dataTransfer.dropEffect = 'move';
+
+        // Add visual feedback for valid drop target
+        if (e.currentTarget.classList.contains('student-card')) {
+            e.currentTarget.classList.add('drag-over');
+        }
+    }
+
+    handleDrop(e, toSeatKey) {
+        e.preventDefault();
+        e.stopPropagation();
+
+        console.log('Drop event on seat:', toSeatKey);
+
+        // Remove visual feedback
+        document.querySelectorAll('.drag-over').forEach(el => el.classList.remove('drag-over'));
+
+        // Try to get drag data from either instance variable or dataTransfer
+        let dragData = this.dragData;
+
+        if (!dragData) {
+            try {
+                const transferData = e.dataTransfer.getData('application/json');
+                if (transferData) {
+                    dragData = JSON.parse(transferData);
+                    console.log('Recovered drag data from dataTransfer:', dragData);
+                }
+            } catch (err) {
+                console.log('Could not parse drag data from dataTransfer');
+            }
+        }
+
+        if (!dragData) {
+            console.log('No drag data available from any source');
+            return;
+        }
+
+        if (dragData.fromSeat === toSeatKey) {
+            console.log('Dropped on same seat, ignoring');
+            return;
+        }
+
+        const fromSeatKey = dragData.fromSeat;
+        const draggedStudent = dragData.student;
+        const targetStudent = this.assignments.get(toSeatKey);
+
+        console.log('Moving', draggedStudent, 'from', fromSeatKey, 'to', toSeatKey);
+
+        if (targetStudent) {
+            // Swap students
+            this.assignments.set(fromSeatKey, targetStudent);
+            this.assignments.set(toSeatKey, draggedStudent);
+            console.log('Swapped students');
+            showNotification(`Swapped ${draggedStudent} with ${targetStudent}`, 'success');
+        } else {
+            // Move student to empty seat
+            this.assignments.delete(fromSeatKey);
+            this.assignments.set(toSeatKey, draggedStudent);
+            console.log('Moved to empty seat');
+            showNotification(`Moved ${draggedStudent} to new seat`, 'success');
+        }
+
+        // Update current seating plan
+        this.currentSeatingPlan.assignments = Object.fromEntries(this.assignments);
+        this.renderGrid();
+    }
+
+    handleDragLeave(e) {
+        // Only remove drag-over if we're truly leaving the element (not just moving to a child)
+        if (!e.currentTarget.contains(e.relatedTarget)) {
+            e.currentTarget.classList.remove('drag-over');
+        }
+    }
+
+    handleDragEnd(e) {
+        console.log('Drag end');
+        // Clean up drag state
+        e.target.classList.remove('dragging');
+        document.querySelectorAll('.drag-over').forEach(el => el.classList.remove('drag-over'));
+        this.dragData = null;
+    }
+
     handleSeatClick(seatKey) {
         if (!this.currentSeatingPlan) return;
 
         const currentStudent = this.assignments.get(seatKey);
-        const availableStudents = this.selectedRoster.students.filter(student => 
+        const availableStudents = this.selectedRoster.students.filter(student =>
             !Array.from(this.assignments.values()).includes(student) || student === currentStudent
         );
 

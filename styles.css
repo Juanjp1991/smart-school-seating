@@ -251,6 +251,48 @@ textarea:focus {
     min-width: 120px;
 }
 
+/* Drag and drop styles */
+.student-card.dragging {
+    opacity: 0.6;
+    transform: scale(0.95);
+    z-index: 1000;
+    box-shadow: 0 8px 16px rgba(0,0,0,0.3);
+}
+
+.student-card.drag-over {
+    background: #fef3c7 !important;
+    border-color: #f59e0b !important;
+    border-style: solid !important;
+    border-width: 3px !important;
+    transform: scale(1.02);
+    box-shadow: 0 4px 12px rgba(245, 158, 11, 0.4);
+}
+
+.student-card.occupied {
+    cursor: grab;
+    user-select: none;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+}
+
+.student-card.occupied:active {
+    cursor: grabbing;
+}
+
+.student-card.occupied.dragging {
+    cursor: grabbing;
+}
+
+/* Ensure drag cursor shows correctly */
+.student-card.occupied[draggable="true"] {
+    cursor: grab;
+}
+
+.student-card.occupied[draggable="true"]:active {
+    cursor: grabbing;
+}
+
 /* Loading states */
 .loading {
     opacity: 0.7;
