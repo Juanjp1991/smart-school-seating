@@ -6,6 +6,18 @@ class App {
     }
 
     init() {
+        // Handle splash screen - hide after 5 seconds
+        setTimeout(() => {
+            const splashScreen = document.getElementById('splash-screen');
+            if (splashScreen) {
+                splashScreen.style.opacity = '0';
+                splashScreen.style.transition = 'opacity 0.5s ease-out';
+                setTimeout(() => {
+                    splashScreen.style.display = 'none';
+                }, 500);
+            }
+        }, 5000);
+
         // Initialize the app - show home page immediately
         const homePage = document.getElementById('home-page');
         const navbar = document.getElementById('top-navbar');
