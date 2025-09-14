@@ -1,73 +1,97 @@
 /* Global styles included directly here instead of import */
 
-/* Dark mode CSS variables */
+/* Modern CSS variables with enhanced color palette */
 :root {
     --bg-primary: #ffffff;
-    --bg-secondary: #f9fafb;
-    --bg-tertiary: #f3f4f6;
-    --text-primary: #111827;
-    --text-secondary: #374151;
-    --text-tertiary: #6b7280;
-    --text-accent: #4b5563;
-    --border-primary: #e5e7eb;
-    --border-secondary: #d1d5db;
-    --border-tertiary: #9ca3af;
+    --bg-secondary: #f8fafc;
+    --bg-tertiary: #f1f5f9;
+    --bg-accent: #f0f9ff;
+    --text-primary: #0f172a;
+    --text-secondary: #334155;
+    --text-tertiary: #64748b;
+    --text-accent: #475569;
+    --border-primary: #e2e8f0;
+    --border-secondary: #cbd5e1;
+    --border-tertiary: #94a3b8;
     --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
-    --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
-    --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
-    --card-hover: rgba(59, 130, 246, 0.1);
+    --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -2px rgba(0, 0, 0, 0.1);
+    --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -4px rgba(0, 0, 0, 0.1);
+    --shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1);
+    --card-hover: rgba(59, 130, 246, 0.05);
+    --gradient-primary: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    --gradient-secondary: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+    --gradient-accent: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+    --border-radius-sm: 0.375rem;
+    --border-radius-md: 0.5rem;
+    --border-radius-lg: 0.75rem;
+    --border-radius-xl: 1rem;
 }
 
 [data-theme="dark"] {
-    --bg-primary: #1f2937;
-    --bg-secondary: #111827;
-    --bg-tertiary: #374151;
-    --text-primary: #f9fafb;
-    --text-secondary: #e5e7eb;
-    --text-tertiary: #9ca3af;
-    --text-accent: #d1d5db;
-    --border-primary: #374151;
-    --border-secondary: #4b5563;
-    --border-tertiary: #6b7280;
-    --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.2);
-    --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.3);
-    --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.4);
-    --card-hover: rgba(59, 130, 246, 0.2);
+    --bg-primary: #0f172a;
+    --bg-secondary: #1e293b;
+    --bg-tertiary: #334155;
+    --bg-accent: #1e3a8a;
+    --text-primary: #f8fafc;
+    --text-secondary: #e2e8f0;
+    --text-tertiary: #94a3b8;
+    --text-accent: #cbd5e1;
+    --border-primary: #334155;
+    --border-secondary: #475569;
+    --border-tertiary: #64748b;
+    --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.3);
+    --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.4), 0 2px 4px -2px rgba(0, 0, 0, 0.4);
+    --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.5), 0 4px 6px -4px rgba(0, 0, 0, 0.5);
+    --shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.6), 0 8px 10px -6px rgba(0, 0, 0, 0.6);
+    --card-hover: rgba(59, 130, 246, 0.15);
+    --gradient-primary: linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%);
+    --gradient-secondary: linear-gradient(135deg, #ec4899 0%, #be185d 100%);
+    --gradient-accent: linear-gradient(135deg, #06b6d4 0%, #0891b2 100%);
 }
 
 /* Additional styles for vanilla HTML/JS version */
 
-/* Body and global styles */
+/* Body and global styles with modern typography */
 body {
     background-color: var(--bg-secondary);
     color: var(--text-primary);
     transition: background-color 0.3s ease, color 0.3s ease;
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+    font-feature-settings: 'cv02', 'cv03', 'cv04', 'cv11';
+    font-variant-numeric: oldstyle-nums;
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    text-rendering: optimizeLegibility;
 }
 
-/* Dark mode toggle button */
+/* Modern dark mode toggle button */
 .dark-mode-toggle {
     position: fixed;
-    top: 1rem;
-    right: 1rem;
+    top: 1.5rem;
+    right: 1.5rem;
     z-index: 1001;
-    background-color: var(--bg-primary);
-    border: 2px solid var(--border-secondary);
-    border-radius: 50%;
-    width: 3rem;
-    height: 3rem;
+    background: var(--bg-primary);
+    border: 1px solid var(--border-primary);
+    border-radius: var(--border-radius-xl);
+    width: 3.5rem;
+    height: 3.5rem;
     display: flex;
     align-items: center;
     justify-content: center;
     cursor: pointer;
     font-size: 1.25rem;
-    transition: all 0.3s ease;
-    box-shadow: var(--shadow-md);
+    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+    box-shadow: var(--shadow-lg);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
 }
 
 .dark-mode-toggle:hover {
-    background-color: var(--bg-secondary);
-    border-color: var(--border-primary);
-    transform: scale(1.1);
+    background: var(--bg-accent);
+    border-color: var(--border-secondary);
+    transform: scale(1.05) rotate(5deg);
+    box-shadow: var(--shadow-xl);
 }
 
 /* Navigation styles */
@@ -190,20 +214,38 @@ textarea:focus {
     line-height: 1.75rem;
 }
 
-/* Roster item styles */
+/* Modern roster item styles */
 .roster-item {
     background: var(--bg-primary);
     border: 1px solid var(--border-primary);
-    border-radius: 0.5rem;
-    padding: 1.5rem;
-    box-shadow: var(--shadow-sm);
-    transition: all 0.2s;
+    border-radius: var(--border-radius-xl);
+    padding: 2rem;
+    box-shadow: var(--shadow-md);
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    position: relative;
+    overflow: hidden;
 }
 
 .roster-item:hover {
     border-color: #3b82f6;
-    box-shadow: var(--shadow-md);
-    background-color: var(--bg-secondary);
+    box-shadow: var(--shadow-xl);
+    background: var(--bg-accent);
+    transform: translateY(-4px) scale(1.02);
+}
+
+.roster-item::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(59, 130, 246, 0.1), transparent);
+    transition: left 0.6s;
+}
+
+.roster-item:hover::before {
+    left: 100%;
 }
 
 .roster-item-header {
@@ -265,36 +307,47 @@ textarea:focus {
     background-color: #dc2626;
 }
 
-/* Student card styles */
+/* Modern student card styles */
 .student-card {
     background: var(--bg-secondary);
     border: 2px dashed var(--border-tertiary);
-    border-radius: 0.5rem;
-    padding: 1rem;
+    border-radius: var(--border-radius-xl);
+    padding: 1.25rem;
     text-align: center;
-    min-height: 80px;
+    min-height: 90px;
     display: flex;
     align-items: center;
     justify-content: center;
     cursor: pointer;
-    transition: all 0.2s;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     user-select: none;
     color: var(--text-primary);
+    position: relative;
+    overflow: hidden;
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
 }
 
 .student-card.occupied {
-    background: #dbeafe;
+    background: linear-gradient(135deg, #dbeafe 0%, #bfdbfe 100%);
     border-color: #3b82f6;
     border-style: solid;
+    box-shadow: var(--shadow-md);
 }
 
 .student-card.occupied:hover {
-    background: #bfdbfe;
+    background: linear-gradient(135deg, #bfdbfe 0%, #93c5fd 100%);
+    transform: translateY(-2px) scale(1.05);
+    box-shadow: var(--shadow-lg);
+    border-color: #2563eb;
 }
 
 .student-card:not(.occupied):hover {
-    background: var(--bg-tertiary);
+    background: var(--bg-accent);
     border-color: var(--border-secondary);
+    border-style: solid;
+    transform: translateY(-2px) scale(1.02);
+    box-shadow: var(--shadow-md);
 }
 
 .student-name {
@@ -583,31 +636,55 @@ body:not(.home-active) .toolbar {
     margin: 0 auto;
 }
 
-/* Modal styles */
+/* Modern modal styles */
 .modal-overlay {
     position: fixed;
     top: 0;
     left: 0;
     right: 0;
     bottom: 0;
-    background-color: rgba(0, 0, 0, 0.5);
+    background: rgba(0, 0, 0, 0.6);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
     display: flex;
     align-items: center;
     justify-content: center;
     z-index: 1000;
     padding: 1rem;
+    animation: fadeIn 0.2s ease-out;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
 }
 
 .modal-content {
     background: var(--bg-primary);
-    border-radius: 0.5rem;
-    box-shadow: var(--shadow-lg);
+    border-radius: var(--border-radius-xl);
+    box-shadow: var(--shadow-xl);
     max-width: 90vw;
     max-height: 90vh;
     width: 100%;
     max-width: 500px;
     overflow-y: auto;
     border: 1px solid var(--border-primary);
+    animation: slideUp 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+@keyframes slideUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px) scale(0.95);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
 }
 
 .modal-header {
@@ -676,12 +753,14 @@ body:not(.home-active) .toolbar {
 .form-group textarea,
 .form-group select {
     width: 100%;
-    padding: 0.75rem;
-    border: 1px solid var(--border-secondary);
-    border-radius: 0.375rem;
+    padding: 0.875rem 1rem;
+    border: 1.5px solid var(--border-secondary);
+    border-radius: var(--border-radius-lg);
     font-size: 0.875rem;
     background-color: var(--bg-primary);
     color: var(--text-primary);
+    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+    font-weight: 500;
 }
 
 .form-group input:focus,
@@ -689,55 +768,88 @@ body:not(.home-active) .toolbar {
 .form-group select:focus {
     outline: none;
     border-color: #3b82f6;
-    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1), var(--shadow-sm);
+    background-color: var(--bg-accent);
+    transform: translateY(-1px);
 }
 
 .button-primary {
-    background-color: #3b82f6;
+    background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%);
     color: white;
     border: none;
-    padding: 0.5rem 1rem;
-    border-radius: 0.375rem;
+    padding: 0.75rem 1.5rem;
+    border-radius: var(--border-radius-lg);
     font-size: 0.875rem;
-    font-weight: 500;
+    font-weight: 600;
     cursor: pointer;
-    transition: all 0.2s;
+    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+    box-shadow: var(--shadow-md);
+    position: relative;
+    overflow: hidden;
+    letter-spacing: 0.025em;
 }
 
 .button-primary:hover {
-    background-color: #2563eb;
+    background: linear-gradient(135deg, #1d4ed8 0%, #1e40af 100%);
+    transform: translateY(-1px);
+    box-shadow: var(--shadow-lg);
+}
+
+.button-primary:active {
+    transform: translateY(0);
+    box-shadow: var(--shadow-md);
 }
 
 .button-secondary {
-    background-color: var(--bg-secondary);
+    background: var(--bg-primary);
     color: var(--text-secondary);
     border: 1px solid var(--border-secondary);
-    padding: 0.5rem 1rem;
-    border-radius: 0.375rem;
+    padding: 0.75rem 1.5rem;
+    border-radius: var(--border-radius-lg);
     font-size: 0.875rem;
-    font-weight: 500;
+    font-weight: 600;
     cursor: pointer;
-    transition: all 0.2s;
+    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+    box-shadow: var(--shadow-sm);
+    letter-spacing: 0.025em;
 }
 
 .button-secondary:hover {
-    background-color: var(--bg-tertiary);
+    background: var(--bg-secondary);
+    border-color: var(--border-tertiary);
+    transform: translateY(-1px);
+    box-shadow: var(--shadow-md);
+    color: var(--text-primary);
+}
+
+.button-secondary:active {
+    transform: translateY(0);
+    box-shadow: var(--shadow-sm);
 }
 
 .button-danger {
-    background-color: #ef4444;
+    background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
     color: white;
     border: none;
-    padding: 0.5rem 1rem;
-    border-radius: 0.375rem;
+    padding: 0.75rem 1.5rem;
+    border-radius: var(--border-radius-lg);
     font-size: 0.875rem;
-    font-weight: 500;
+    font-weight: 600;
     cursor: pointer;
-    transition: all 0.2s;
+    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+    box-shadow: var(--shadow-md);
+    letter-spacing: 0.025em;
 }
 
 .button-danger:hover {
-    background-color: #dc2626;
+    background: linear-gradient(135deg, #dc2626 0%, #b91c1c 100%);
+    transform: translateY(-1px);
+    box-shadow: var(--shadow-lg);
+}
+
+.button-danger:active {
+    transform: translateY(0);
+    box-shadow: var(--shadow-md);
 }
 
 .error-message {

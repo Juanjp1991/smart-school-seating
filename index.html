@@ -5,6 +5,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>SmartSchool - Classroom Seating</title>
     <meta name="description" content="Intelligent classroom seating arrangement tool for teachers">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="styles.css">
 </head>
@@ -43,86 +46,112 @@
     <!-- Main Content -->
     <main id="app-content">
         <!-- Home Page -->
-        <div id="home-page" class="page active min-h-screen bg-gradient-to-br from-blue-50 via-white to-purple-50" style="display: block !important; opacity: 1 !important;">
-            <div class="container mx-auto px-4 py-12">
-                <div class="text-center mb-12">
-                    <div class="mb-6">
-                        <span class="inline-block p-4 bg-blue-100 rounded-full mb-4">
-                            <svg class="w-12 h-12 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"></path>
-                            </svg>
-                        </span>
+        <div id="home-page" class="page active min-h-screen bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-50" style="display: block !important; opacity: 1 !important;">
+            <div class="container mx-auto px-4 py-16">
+                <div class="text-center mb-16">
+                    <div class="mb-8 relative">
+                        <div class="relative inline-block">
+                            <span class="inline-flex p-6 bg-gradient-to-br from-blue-500 to-purple-600 rounded-3xl mb-6 shadow-2xl transform hover:scale-105 transition-all duration-300">
+                                <svg class="w-16 h-16 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="1.5">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"></path>
+                                </svg>
+                            </span>
+                            <div class="absolute -inset-4 bg-gradient-to-r from-blue-400 to-purple-500 rounded-full blur-xl opacity-30 animate-pulse"></div>
+                        </div>
                     </div>
-                    <h1 class="text-4xl md:text-6xl font-bold text-gray-900 mb-6">
+                    <h1 class="text-5xl md:text-7xl font-black text-transparent bg-clip-text bg-gradient-to-r from-slate-900 via-blue-800 to-slate-900 mb-8 leading-tight">
                         SmartSchool
-                        <span class="block text-blue-600">Seating</span>
+                        <span class="block bg-gradient-to-r from-blue-600 via-purple-600 to-indigo-600 bg-clip-text">Seating</span>
                     </h1>
-                    <p class="text-xl text-gray-600 mb-8 max-w-2xl mx-auto leading-relaxed">
-                        Intelligent classroom seating arrangement tool for teachers. 
-                        Create layouts, manage student rosters, and generate optimal seating plans.
+                    <p class="text-xl md:text-2xl text-slate-600 mb-12 max-w-3xl mx-auto leading-relaxed font-medium">
+                        Revolutionary classroom seating arrangement platform for modern educators.
+                        <span class="text-blue-600 font-semibold">Create intelligent layouts</span>,
+                        <span class="text-purple-600 font-semibold">manage student rosters</span>, and
+                        <span class="text-indigo-600 font-semibold">generate optimal seating plans</span>.
                     </p>
                 </div>
 
-                <div class="grid md:grid-cols-3 gap-8 mb-12">
-                    <div class="group bg-white rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-300 p-8 border border-gray-100 hover:border-blue-200 hover:-translate-y-1 cursor-pointer"
+                <div class="grid md:grid-cols-3 gap-10 mb-16">
+                    <div class="group relative bg-white/80 backdrop-blur-sm rounded-3xl shadow-xl hover:shadow-2xl transition-all duration-500 p-10 border border-slate-200/50 hover:border-blue-300/50 hover:-translate-y-3 cursor-pointer overflow-hidden"
                          onclick="showPage('layout-editor')">
-                        <div class="text-center">
-                            <div class="mb-6">
-                                <div class="inline-block p-4 bg-blue-100 rounded-full group-hover:bg-blue-200 transition-colors">
-                                    <svg class="w-8 h-8 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 5a1 1 0 011-1h14a1 1 0 011 1v2a1 1 0 01-1 1H5a1 1 0 01-1-1V5zM4 13a1 1 0 011-1h6a1 1 0 011 1v6a1 1 0 01-1 1H5a1 1 0 01-1-1v-6zM16 13a1 1 0 011-1h2a1 1 0 011 1v6a1 1 0 01-1 1h-2a1 1 0 01-1-1v-6z"></path>
+                        <div class="absolute top-0 right-0 w-32 h-32 bg-gradient-to-br from-blue-400/20 to-purple-400/20 rounded-full -translate-y-16 translate-x-16"></div>
+                        <div class="relative z-10 text-center">
+                            <div class="mb-8">
+                                <div class="inline-flex p-5 bg-gradient-to-br from-blue-500 to-blue-600 rounded-2xl shadow-lg group-hover:scale-110 group-hover:rotate-3 transition-all duration-300">
+                                    <svg class="w-10 h-10 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="1.5">
+                                        <path stroke-linecap="round" stroke-linejoin="round" d="M4 5a1 1 0 011-1h14a1 1 0 011 1v2a1 1 0 01-1 1H5a1 1 0 01-1-1V5zM4 13a1 1 0 011-1h6a1 1 0 011 1v6a1 1 0 01-1 1H5a1 1 0 01-1-1v-6zM16 13a1 1 0 011-1h2a1 1 0 011 1v6a1 1 0 01-1 1h-2a1 1 0 01-1-1v-6z"></path>
                                     </svg>
                                 </div>
                             </div>
-                            <h2 class="text-2xl font-bold text-gray-900 mb-4">Layout Editor</h2>
-                            <p class="text-gray-600 mb-6">Design your classroom layout with desks, seats, and doors</p>
-                            <div class="bg-blue-50 rounded-lg px-4 py-2 inline-block">
-                                <span class="text-blue-700 font-medium">Create Layout →</span>
+                            <h2 class="text-2xl font-bold text-slate-900 mb-4 group-hover:text-blue-600 transition-colors">Layout Designer</h2>
+                            <p class="text-slate-600 mb-8 leading-relaxed">Design sophisticated classroom layouts with intuitive drag-and-drop tools for desks, seats, and room elements</p>
+                            <div class="inline-flex items-center gap-2 bg-gradient-to-r from-blue-50 to-blue-100 hover:from-blue-100 hover:to-blue-200 rounded-xl px-6 py-3 font-semibold text-blue-700 transition-all duration-300 group-hover:scale-105">
+                                <span>Create Layout</span>
+                                <svg class="w-4 h-4 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"></path>
+                                </svg>
                             </div>
                         </div>
                     </div>
 
-                    <div class="group bg-white rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-300 p-8 border border-gray-100 hover:border-green-200 hover:-translate-y-1 cursor-pointer"
+                    <div class="group relative bg-white/80 backdrop-blur-sm rounded-3xl shadow-xl hover:shadow-2xl transition-all duration-500 p-10 border border-slate-200/50 hover:border-emerald-300/50 hover:-translate-y-3 cursor-pointer overflow-hidden"
                          onclick="showPage('rosters')">
-                        <div class="text-center">
-                            <div class="mb-6">
-                                <div class="inline-block p-4 bg-green-100 rounded-full group-hover:bg-green-200 transition-colors">
-                                    <svg class="w-8 h-8 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197m13.5-9a2.5 2.5 0 11-5 0 2.5 2.5 0 015 0z"></path>
+                        <div class="absolute top-0 right-0 w-32 h-32 bg-gradient-to-br from-emerald-400/20 to-green-400/20 rounded-full -translate-y-16 translate-x-16"></div>
+                        <div class="relative z-10 text-center">
+                            <div class="mb-8">
+                                <div class="inline-flex p-5 bg-gradient-to-br from-emerald-500 to-emerald-600 rounded-2xl shadow-lg group-hover:scale-110 group-hover:rotate-3 transition-all duration-300">
+                                    <svg class="w-10 h-10 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="1.5">
+                                        <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197m13.5-9a2.5 2.5 0 11-5 0 2.5 2.5 0 015 0z"></path>
                                     </svg>
                                 </div>
                             </div>
-                            <h2 class="text-2xl font-bold text-gray-900 mb-4">Roster Manager</h2>
-                            <p class="text-gray-600 mb-6">Create and manage your student rosters with detailed information</p>
-                            <div class="bg-green-50 rounded-lg px-4 py-2 inline-block">
-                                <span class="text-green-700 font-medium">Manage Rosters →</span>
+                            <h2 class="text-2xl font-bold text-slate-900 mb-4 group-hover:text-emerald-600 transition-colors">Student Rosters</h2>
+                            <p class="text-slate-600 mb-8 leading-relaxed">Organize and manage comprehensive student databases with detailed profiles, preferences, and academic information</p>
+                            <div class="inline-flex items-center gap-2 bg-gradient-to-r from-emerald-50 to-emerald-100 hover:from-emerald-100 hover:to-emerald-200 rounded-xl px-6 py-3 font-semibold text-emerald-700 transition-all duration-300 group-hover:scale-105">
+                                <span>Manage Students</span>
+                                <svg class="w-4 h-4 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"></path>
+                                </svg>
                             </div>
                         </div>
                     </div>
 
-                    <div class="group bg-white rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-300 p-8 border border-gray-100 hover:border-purple-200 hover:-translate-y-1 cursor-pointer"
+                    <div class="group relative bg-white/80 backdrop-blur-sm rounded-3xl shadow-xl hover:shadow-2xl transition-all duration-500 p-10 border border-slate-200/50 hover:border-purple-300/50 hover:-translate-y-3 cursor-pointer overflow-hidden"
                          onclick="showPage('plan-editor')">
-                        <div class="text-center">
-                            <div class="mb-6">
-                                <div class="inline-block p-4 bg-purple-100 rounded-full group-hover:bg-purple-200 transition-colors">
-                                    <svg class="w-8 h-8 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v6a2 2 0 002 2h2m0 0h2a2 2 0 002-2V7a2 2 0 00-2-2H9m0 0V3m0 2v2m0-2h2m-2 0H7m2 0v6m0 0v2m0-2h2m-2 0H7"></path>
+                        <div class="absolute top-0 right-0 w-32 h-32 bg-gradient-to-br from-purple-400/20 to-indigo-400/20 rounded-full -translate-y-16 translate-x-16"></div>
+                        <div class="relative z-10 text-center">
+                            <div class="mb-8">
+                                <div class="inline-flex p-5 bg-gradient-to-br from-purple-500 to-purple-600 rounded-2xl shadow-lg group-hover:scale-110 group-hover:rotate-3 transition-all duration-300">
+                                    <svg class="w-10 h-10 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="1.5">
+                                        <path stroke-linecap="round" stroke-linejoin="round" d="M9.813 15.904L9 18.75l-.813-2.846a4.5 4.5 0 00-3.09-3.09L2.25 12l2.846-.813a4.5 4.5 0 003.09-3.09L9 5.25l.813 2.846a4.5 4.5 0 003.09 3.09L15.75 12l-2.846.813a4.5 4.5 0 00-3.09 3.09zM18.259 8.715L18 9.75l-.259-1.035a3.375 3.375 0 00-2.455-2.456L14.25 6l1.036-.259a3.375 3.375 0 002.455-2.456L18 2.25l.259 1.035a3.375 3.375 0 002.456 2.456L21.75 6l-1.035.259a3.375 3.375 0 00-2.456 2.456z"></path>
                                     </svg>
                                 </div>
                             </div>
-                            <h2 class="text-2xl font-bold text-gray-900 mb-4">Seating Planner</h2>
-                            <p class="text-gray-600 mb-6">Generate optimal seating arrangements for your students</p>
-                            <div class="bg-purple-50 rounded-lg px-4 py-2 inline-block">
-                                <span class="text-purple-700 font-medium">Create Plan →</span>
+                            <h2 class="text-2xl font-bold text-slate-900 mb-4 group-hover:text-purple-600 transition-colors">AI Seating Plans</h2>
+                            <p class="text-slate-600 mb-8 leading-relaxed">Generate intelligent, optimized seating arrangements using advanced algorithms and student behavioral insights</p>
+                            <div class="inline-flex items-center gap-2 bg-gradient-to-r from-purple-50 to-purple-100 hover:from-purple-100 hover:to-purple-200 rounded-xl px-6 py-3 font-semibold text-purple-700 transition-all duration-300 group-hover:scale-105">
+                                <span>Generate Plans</span>
+                                <svg class="w-4 h-4 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"></path>
+                                </svg>
                             </div>
                         </div>
                     </div>
                 </div>
 
                 <div class="text-center">
-                    <div class="inline-flex items-center justify-center space-x-2 bg-white rounded-full px-6 py-3 shadow-md">
-                        <span class="w-3 h-3 bg-green-400 rounded-full animate-pulse"></span>
-                        <span class="text-sm text-gray-600 font-medium">Ready to use • All features available</span>
+                    <div class="inline-flex items-center justify-center space-x-3 bg-white/70 backdrop-blur-md rounded-full px-8 py-4 shadow-lg border border-slate-200/50">
+                        <div class="flex space-x-1">
+                            <div class="w-2 h-2 bg-emerald-400 rounded-full animate-pulse"></div>
+                            <div class="w-2 h-2 bg-blue-400 rounded-full animate-pulse" style="animation-delay: 0.2s;"></div>
+                            <div class="w-2 h-2 bg-purple-400 rounded-full animate-pulse" style="animation-delay: 0.4s;"></div>
+                        </div>
+                        <span class="text-sm text-slate-700 font-semibold tracking-wide">System Ready • All Features Online</span>
+                        <div class="w-6 h-6 bg-gradient-to-r from-emerald-400 to-blue-500 rounded-full flex items-center justify-center">
+                            <svg class="w-3 h-3 text-white" fill="currentColor" viewBox="0 0 20 20">
+                                <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path>
+                            </svg>
+                        </div>
                     </div>
                 </div>
             </div>
