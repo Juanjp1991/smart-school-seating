@@ -26,13 +26,22 @@ class PlanEditor {
         const layouts = StorageService.getAllLayouts();
         const select = document.getElementById('layout-select');
         if (select) {
-            select.innerHTML = '<option value="">Select a Layout</option>';
+            select.innerHTML = '';
+
+            const placeholderOption = document.createElement('option');
+            placeholderOption.value = '';
+            placeholderOption.dataset.i18n = 'plan.controls.layoutPlaceholder';
+            placeholderOption.textContent = t('plan.controls.layoutPlaceholder');
+            select.appendChild(placeholderOption);
+
             layouts.forEach(layout => {
                 const option = document.createElement('option');
                 option.value = layout.id;
                 option.textContent = layout.name;
                 select.appendChild(option);
             });
+
+            applyTranslations();
         }
     }
 
@@ -40,13 +49,22 @@ class PlanEditor {
         const rosters = StorageService.getAllRosters();
         const select = document.getElementById('roster-select');
         if (select) {
-            select.innerHTML = '<option value="">Select a Roster</option>';
+            select.innerHTML = '';
+
+            const placeholderOption = document.createElement('option');
+            placeholderOption.value = '';
+            placeholderOption.dataset.i18n = 'plan.controls.rosterPlaceholder';
+            placeholderOption.textContent = t('plan.controls.rosterPlaceholder');
+            select.appendChild(placeholderOption);
+
             rosters.forEach(roster => {
                 const option = document.createElement('option');
                 option.value = roster.id;
                 option.textContent = roster.name;
                 select.appendChild(option);
             });
+
+            applyTranslations();
         }
     }
 
@@ -78,7 +96,7 @@ class PlanEditor {
 
     generateSeatingPlan() {
         if (!this.selectedLayout || !this.selectedRoster) {
-            showNotification('Please select both a layout and a roster.', 'error');
+            showNotification(t('notifications.error.seatingPlanRequirements'), 'error');
             return;
         }
 
@@ -86,17 +104,20 @@ class PlanEditor {
         const students = this.selectedRoster.students || [];
 
         if (seats.length === 0) {
-            showNotification('The selected layout has no seats.', 'error');
+            showNotification(t('notifications.error.seatingPlanNoSeats'), 'error');
             return;
         }
 
         if (students.length === 0) {
-            showNotification('The selected roster has no students.', 'error');
+            showNotification(t('notifications.error.seatingPlanNoStudents'), 'error');
             return;
         }
 
         if (students.length > seats.length) {
-            showNotification(`Not enough seats (${seats.length}) for all students (${students.length}).`, 'error');
+            showNotification(t('notifications.error.seatingPlanNotEnoughSeats', {
+                seats: seats.length,
+                students: students.length
+            }), 'error');
             return;
         }
 
@@ -117,20 +138,29 @@ class PlanEditor {
         };
 
         this.renderSeatingPlan();
-        showNotification('Seating plan generated successfully!', 'success');
+        showNotification(t('notifications.success.seatingPlanGenerated'), 'success');
     }
 
     renderSeatingPlan() {
         const content = document.getElementById('seating-plan-content');
-        
+
         if (!this.currentSeatingPlan) {
-            content.innerHTML = '<p style="color: #6b7280;">Select a layout and roster to generate a seating plan.</p>';
+            content.innerHTML = `<p style="color: #6b7280;">${t('plan.empty.selectBoth')}</p>`;
             return;
         }
 
         const layout = this.selectedLayout;
         const roster = this.selectedRoster;
-        
+        const locale = typeof getCurrentLanguage === 'function' ? getCurrentLanguage() : 'en';
+        const generatedTimestamp = new Date(this.currentSeatingPlan.generatedAt).toLocaleString(
+            locale === 'nl' ? 'nl-NL' : undefined
+        );
+        const summaryText = t('planEditor.summary', {
+            layout: layout.name,
+            roster: roster.name,
+            generated: generatedTimestamp
+        });
+
         // Calculate grid dimensions
         const cellSize = 120;
         const gap = 16;
@@ -139,15 +169,14 @@ class PlanEditor {
             <div style="margin-bottom: 1.5rem;">
                 <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
                     <div>
-                        <h3 style="font-size: 1.125rem; font-weight: 600;">Seating Plan</h3>
+                        <h3 style="font-size: 1.125rem; font-weight: 600;">${t('planEditor.seatingPlanTitle')}</h3>
                         <p style="font-size: 0.875rem; color: #6b7280;">
-                            Layout: ${layout.name} | Roster: ${roster.name} | 
-                            Generated: ${new Date(this.currentSeatingPlan.generatedAt).toLocaleString()}
+                            ${summaryText}
                         </p>
                     </div>
                     <div style="display: flex; gap: 0.5rem;">
-                        <button onclick="regenerateSeatingPlan()" class="button-secondary">Regenerate</button>
-                        <button onclick="saveSeatingPlan()" class="button-primary">Save Plan</button>
+                        <button onclick="regenerateSeatingPlan()" class="button-secondary">${t('plan.actions.regenerate')}</button>
+                        <button onclick="saveSeatingPlan()" class="button-primary">${t('plan.actions.save')}</button>
                     </div>
                 </div>
             </div>
@@ -258,7 +287,7 @@ class PlanEditor {
                         // Create empty seat span
                         const emptySpan = document.createElement('span');
                         emptySpan.className = 'empty-seat';
-                        emptySpan.textContent = 'Empty Seat';
+                        emptySpan.textContent = t('planEditor.emptySeat');
                         emptySpan.style.pointerEvents = 'none';
                         cell.appendChild(emptySpan);
 
@@ -358,18 +387,22 @@ class PlanEditor {
             this.assignments.set(fromSeatKey, targetStudent);
             this.assignments.set(toSeatKey, draggedStudent);
             console.log('Swapped students');
-            showNotification(`Swapped ${draggedStudent} with ${targetStudent}`, 'success');
+            showNotification(t('notifications.success.swapStudents', {
+                first: draggedStudent,
+                second: targetStudent
+            }), 'success');
         } else {
             // Move student to empty seat
             this.assignments.delete(fromSeatKey);
             this.assignments.set(toSeatKey, draggedStudent);
             console.log('Moved to empty seat');
-            showNotification(`Moved ${draggedStudent} to new seat`, 'success');
+            showNotification(t('notifications.success.moveToSeat', { student: draggedStudent }), 'success');
         }
 
         // Update current seating plan
         this.currentSeatingPlan.assignments = Object.fromEntries(this.assignments);
         this.renderGrid();
+        applyTranslations();
     }
 
     handleDragLeave(e) {
@@ -396,22 +429,22 @@ class PlanEditor {
         );
 
         if (availableStudents.length === 0 && !currentStudent) {
-            showNotification('All students are already assigned to seats.', 'info');
+            showNotification(t('notifications.info.allStudentsAssigned'), 'info');
             return;
         }
 
         // Create a simple prompt for student selection
-        let options = ['Remove student'];
+        let options = [t('prompts.seatOptions.remove')];
         if (currentStudent) {
-            options.push(`Keep ${currentStudent}`);
+            options.push(t('prompts.seatOptions.keep', { name: currentStudent }));
         }
         options.push(...availableStudents.filter(s => s !== currentStudent));
 
-        const choice = prompt(
-            `Current seat assignment: ${currentStudent || 'Empty'}\n\nChoose an option:\n` +
-            options.map((option, index) => `${index}: ${option}`).join('\n'),
-            '0'
-        );
+        const currentLabel = currentStudent || t('planEditor.emptySeat');
+        const promptMessage = t('prompts.seatAssignment', { current: currentLabel }) +
+            options.map((option, index) => `${index}: ${option}`).join('\n');
+
+        const choice = prompt(promptMessage, '0');
 
         const choiceIndex = parseInt(choice);
         if (isNaN(choiceIndex) || choiceIndex < 0 || choiceIndex >= options.length) {
@@ -453,11 +486,11 @@ class PlanEditor {
 
     saveCurrentSeatingPlan() {
         if (!this.currentSeatingPlan) {
-            showNotification('No seating plan to save.', 'error');
+            showNotification(t('notifications.error.noSeatingPlanToSave'), 'error');
             return;
         }
 
-        const planName = prompt('Enter a name for this seating plan:');
+        const planName = prompt(t('prompts.seatingPlanName'));
         if (!planName || !planName.trim()) {
             return;
         }
@@ -473,26 +506,26 @@ class PlanEditor {
             };
 
             StorageService.saveSeatingPlan(planData);
-            showNotification(`Seating plan "${planName}" saved successfully!`, 'success');
+            showNotification(t('notifications.success.seatingPlanSaved', { name: planName }), 'success');
         } catch (error) {
             console.error('Failed to save seating plan:', error);
-            showNotification('Failed to save seating plan. Please try again.', 'error');
+            showNotification(t('notifications.error.seatingPlanSaveFailed'), 'error');
         }
     }
 
     updateContent() {
         if (!this.selectedLayout || !this.selectedRoster || !this.currentSeatingPlan) {
             const content = document.getElementById('seating-plan-content');
-            let message = 'Select a layout and roster to generate a seating plan.';
-            
+            let message = t('plan.empty.selectBoth');
+
             if (!this.selectedLayout && !this.selectedRoster) {
-                message = 'Select a layout and roster to generate a seating plan.';
+                message = t('plan.empty.selectBoth');
             } else if (!this.selectedLayout) {
-                message = 'Select a layout to continue.';
+                message = t('plan.empty.selectLayout');
             } else if (!this.selectedRoster) {
-                message = 'Select a roster to continue.';
+                message = t('plan.empty.selectRoster');
             }
-            
+
             content.innerHTML = `<p style="color: #6b7280;">${message}</p>`;
         }
     }
@@ -532,4 +565,17 @@ function saveSeatingPlan() {
 // Initialize plan editor when script loads
 document.addEventListener('DOMContentLoaded', () => {
     window.planEditor = new PlanEditor();
+});
+
+document.addEventListener('languagechange', () => {
+    if (window.planEditor) {
+        planEditor.populateLayoutSelect();
+        planEditor.populateRosterSelect();
+
+        if (planEditor.currentSeatingPlan) {
+            planEditor.renderSeatingPlan();
+        } else {
+            planEditor.updateContent();
+        }
+    }
 });
