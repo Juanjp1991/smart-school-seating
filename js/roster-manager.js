@@ -13,48 +13,55 @@ class RosterManager {
         if (rosters.length === 0) {
             rosterList.innerHTML = `
                 <div style="text-align: center; padding: 3rem 0;">
-                    <p style="color: #6b7280; font-size: 1.125rem;">No rosters found.</p>
-                    <p style="color: #9ca3af; font-size: 0.875rem; margin-top: 0.5rem;">Create your first roster to get started.</p>
+                    <p style="color: #6b7280; font-size: 1.125rem;">${t('rosters.empty.title')}</p>
+                    <p style="color: #9ca3af; font-size: 0.875rem; margin-top: 0.5rem;">${t('rosters.empty.subtitle')}</p>
                 </div>
             `;
+            applyTranslations();
             return;
         }
 
         rosterList.innerHTML = rosters.map(roster => {
             const studentCount = roster.students ? roster.students.length : 0;
+            const studentCountText = t('roster.studentCount', { count: studentCount });
+            const previewIntro = t('roster.previewPrefix');
+            const previewMore = studentCount > 3 ? t('roster.previewMore', { count: studentCount - 3 }) : '';
             return `
                 <div class="roster-item">
                     <div class="roster-item-header">
                         <div>
                             <h3 class="roster-item-title">${roster.name}</h3>
-                            <p class="roster-item-count">${studentCount} students</p>
+                            <p class="roster-item-count">${studentCountText}</p>
                         </div>
                         <div class="roster-item-actions">
-                            <button onclick="editRoster('${roster.id}')" title="Edit">Edit</button>
-                            <button onclick="viewRoster('${roster.id}')" class="button-primary" title="View Students">View</button>
-                            <button onclick="deleteRoster('${roster.id}')" class="button-danger" title="Delete">Delete</button>
+                            <button onclick="editRoster('${roster.id}')" title="${t('roster.actions.edit')}">${t('roster.actions.edit')}</button>
+                            <button onclick="viewRoster('${roster.id}')" class="button-primary" title="${t('roster.actions.view')}">${t('roster.actions.view')}</button>
+                            <button onclick="deleteRoster('${roster.id}')" class="button-danger" title="${t('roster.actions.delete')}">${t('roster.actions.delete')}</button>
                         </div>
                     </div>
                     ${studentCount > 0 ? `
                         <div class="roster-preview" style="margin-top: 1rem;">
                             <p style="font-size: 0.875rem; color: #6b7280;">
-                                Students: ${roster.students.slice(0, 3).join(', ')}${studentCount > 3 ? `... and ${studentCount - 3} more` : ''}
+                                ${previewIntro} ${roster.students.slice(0, 3).join(', ')}${previewMore ? ` ${previewMore}` : ''}
                             </p>
                         </div>
                     ` : ''}
                 </div>
             `;
         }).join('');
+
+        applyTranslations();
     }
 
     openCreateRosterModal() {
         this.currentEditingId = null;
-        document.getElementById('roster-modal-title').textContent = 'Create New Roster';
+        document.getElementById('roster-modal-title').textContent = t('modals.roster.titleCreate');
         document.getElementById('roster-name').value = '';
         document.getElementById('student-input').value = '';
         document.getElementById('roster-error').style.display = 'none';
         document.getElementById('roster-modal').style.display = 'flex';
         document.getElementById('roster-name').focus();
+        applyTranslations();
     }
 
     openEditRosterModal(rosterId) {
@@ -62,12 +69,13 @@ class RosterManager {
         if (!roster) return;
 
         this.currentEditingId = rosterId;
-        document.getElementById('roster-modal-title').textContent = 'Edit Roster';
+        document.getElementById('roster-modal-title').textContent = t('modals.roster.titleEdit');
         document.getElementById('roster-name').value = roster.name;
         document.getElementById('student-input').value = (roster.students || []).join('\n');
         document.getElementById('roster-error').style.display = 'none';
         document.getElementById('roster-modal').style.display = 'flex';
         document.getElementById('roster-name').focus();
+        applyTranslations();
     }
 
     closeRosterModal() {
@@ -82,13 +90,13 @@ class RosterManager {
 
         // Validate input
         if (!name) {
-            errorEl.textContent = 'Please enter a roster name.';
+            errorEl.textContent = t('notifications.error.rosterNameRequired');
             errorEl.style.display = 'block';
             return;
         }
 
         if (!studentInput) {
-            errorEl.textContent = 'Please enter at least one student name.';
+            errorEl.textContent = t('notifications.error.rosterStudentRequired');
             errorEl.style.display = 'block';
             return;
         }
@@ -100,7 +108,7 @@ class RosterManager {
             .filter(line => line.length > 0);
 
         if (students.length === 0) {
-            errorEl.textContent = 'Please enter at least one student name.';
+            errorEl.textContent = t('notifications.error.rosterStudentRequired');
             errorEl.style.display = 'block';
             return;
         }
@@ -108,7 +116,7 @@ class RosterManager {
         // Check for duplicate name (except when editing same roster)
         const existingRoster = StorageService.getRosterByName(name);
         if (existingRoster && existingRoster.id !== this.currentEditingId) {
-            errorEl.textContent = 'A roster with this name already exists.';
+            errorEl.textContent = t('notifications.error.rosterExists');
             errorEl.style.display = 'block';
             return;
         }
@@ -119,11 +127,11 @@ class RosterManager {
             if (this.currentEditingId) {
                 // Update existing roster
                 StorageService.updateRoster(this.currentEditingId, rosterData);
-                showNotification(`Roster "${name}" updated successfully!`, 'success');
+                showNotification(t('notifications.success.rosterUpdated', { name }), 'success');
             } else {
                 // Create new roster
                 StorageService.saveRoster(rosterData);
-                showNotification(`Roster "${name}" created successfully!`, 'success');
+                showNotification(t('notifications.success.rosterCreated', { name }), 'success');
             }
 
             // Update dropdown in plan editor if present
@@ -136,7 +144,7 @@ class RosterManager {
 
         } catch (error) {
             console.error('Failed to save roster:', error);
-            errorEl.textContent = 'Failed to save roster. Please try again.';
+            errorEl.textContent = t('notifications.error.rosterSaveFailed');
             errorEl.style.display = 'block';
         }
     }
@@ -145,20 +153,20 @@ class RosterManager {
         const roster = StorageService.getRosterById(rosterId);
         if (!roster) return;
 
-        if (confirm(`Are you sure you want to delete the roster "${roster.name}"? This action cannot be undone.`)) {
+        if (confirm(t('prompts.rosterDelete', { name: roster.name }))) {
             try {
                 StorageService.deleteRoster(rosterId);
-                showNotification(`Roster "${roster.name}" deleted successfully!`, 'success');
-                
+                showNotification(t('notifications.success.rosterDeleted', { name: roster.name }), 'success');
+
                 // Update dropdown in plan editor if present
                 if (app) {
                     app.populateRosterSelect();
                 }
-                
+
                 this.loadRosterList();
             } catch (error) {
                 console.error('Failed to delete roster:', error);
-                showNotification('Failed to delete roster. Please try again.', 'error');
+                showNotification(t('notifications.error.rosterDeleteFailed'), 'error');
             }
         }
     }
@@ -168,9 +176,9 @@ class RosterManager {
         if (!roster) return;
 
         const students = roster.students || [];
-        const studentList = students.length > 0 
+        const studentList = students.length > 0
             ? students.map((student, index) => `${index + 1}. ${student}`).join('\n')
-            : 'No students in this roster.';
+            : t('notifications.error.rosterViewEmpty');
 
         alert(`${roster.name}\n\n${studentList}`);
     }
@@ -179,13 +187,15 @@ class RosterManager {
     openImportCsvModal() {
         document.getElementById('roster-name-csv').value = '';
         document.getElementById('csv-file-input').value = '';
-        document.getElementById('csv-preview').innerHTML = 'Select a CSV file to see preview...';
+        document.getElementById('csv-preview').innerHTML = `<span data-i18n="modals.importCsv.previewPlaceholder">${t('modals.importCsv.previewPlaceholder')}</span>`;
         document.getElementById('import-csv-error').style.display = 'none';
         document.getElementById('import-csv-modal').style.display = 'flex';
-        
+
         // Add file change listener
         const fileInput = document.getElementById('csv-file-input');
         fileInput.onchange = (e) => this.previewCsvFile(e.target.files[0]);
+
+        applyTranslations();
     }
 
     closeImportCsvModal() {
@@ -205,8 +215,8 @@ class RosterManager {
                 const lines = csvText.trim().split('\n');
                 
                 if (lines.length < 2) {
-                    document.getElementById('csv-preview').innerHTML = 
-                        '<span style="color: red;">Error: CSV must have at least a header row and one data row.</span>';
+                    document.getElementById('csv-preview').innerHTML =
+                        `<span style="color: red;">${t('tables.csv.headerError')}</span>`;
                     return;
                 }
                 
@@ -216,8 +226,8 @@ class RosterManager {
                 // Check for required 'name' column
                 const nameIndex = headers.findIndex(h => h.toLowerCase() === 'name');
                 if (nameIndex === -1) {
-                    document.getElementById('csv-preview').innerHTML = 
-                        '<span style="color: red;">Error: CSV must have a "name" column.</span>';
+                    document.getElementById('csv-preview').innerHTML =
+                        `<span style="color: red;">${t('tables.csv.nameError')}</span>`;
                     return;
                 }
                 
@@ -244,17 +254,17 @@ class RosterManager {
                 }
                 
                 if (lines.length > 6) {
-                    preview += `<tr><td colspan="${headers.length}" style="padding: 8px; text-align: center; color: #6b7280; font-style: italic;">... and ${lines.length - 6} more rows</td></tr>`;
+                    preview += `<tr><td colspan="${headers.length}" style="padding: 8px; text-align: center; color: #6b7280; font-style: italic;">${t('tables.csv.footerMoreRows', { count: lines.length - 6 })}</td></tr>`;
                 }
-                
+
                 preview += '</table>';
-                preview += `<p style="margin-top: 12px; color: #059669; font-size: 0.875rem;">✓ Found ${lines.length - 1} students</p>`;
-                
+                preview += `<p style="margin-top: 12px; color: #059669; font-size: 0.875rem;">${t('tables.csv.foundStudents', { count: lines.length - 1 })}</p>`;
+
                 document.getElementById('csv-preview').innerHTML = preview;
-                
+
             } catch (error) {
-                document.getElementById('csv-preview').innerHTML = 
-                    '<span style="color: red;">Error reading CSV file. Please check the file format.</span>';
+                document.getElementById('csv-preview').innerHTML =
+                    `<span style="color: red;">${t('tables.csv.readError')}</span>`;
             }
         };
         
@@ -268,13 +278,13 @@ class RosterManager {
         const errorEl = document.getElementById('import-csv-error');
 
         if (!name) {
-            errorEl.textContent = 'Please enter a roster name.';
+            errorEl.textContent = t('notifications.error.csvNameRequired');
             errorEl.style.display = 'block';
             return;
         }
 
         if (!file) {
-            errorEl.textContent = 'Please select a CSV file.';
+            errorEl.textContent = t('notifications.error.csvFileRequired');
             errorEl.style.display = 'block';
             return;
         }
@@ -282,7 +292,7 @@ class RosterManager {
         // Check for duplicate name
         const existingRoster = StorageService.getRosterByName(name);
         if (existingRoster) {
-            errorEl.textContent = 'A roster with this name already exists.';
+            errorEl.textContent = t('notifications.error.csvDuplicateName');
             errorEl.style.display = 'block';
             return;
         }
@@ -294,7 +304,7 @@ class RosterManager {
                 const lines = csvText.trim().split('\n');
                 
                 if (lines.length < 2) {
-                    errorEl.textContent = 'CSV must have at least a header row and one data row.';
+                    errorEl.textContent = t('notifications.error.csvStructure');
                     errorEl.style.display = 'block';
                     return;
                 }
@@ -304,7 +314,7 @@ class RosterManager {
                 const nameIndex = headers.indexOf('name');
                 
                 if (nameIndex === -1) {
-                    errorEl.textContent = 'CSV must have a "name" column.';
+                    errorEl.textContent = t('notifications.error.csvMissingName');
                     errorEl.style.display = 'block';
                     return;
                 }
@@ -320,7 +330,7 @@ class RosterManager {
                 }
                 
                 if (students.length === 0) {
-                    errorEl.textContent = 'No valid student names found in CSV.';
+                    errorEl.textContent = t('notifications.error.csvNoStudents');
                     errorEl.style.display = 'block';
                     return;
                 }
@@ -334,13 +344,13 @@ class RosterManager {
                     app.populateRosterSelect();
                 }
                 
-                showNotification(`Roster "${name}" imported successfully with ${students.length} students!`, 'success');
+                showNotification(t('notifications.success.rosterImported', { name, count: students.length }), 'success');
                 this.closeImportCsvModal();
                 this.loadRosterList();
-                
+
             } catch (error) {
                 console.error('Failed to import CSV:', error);
-                errorEl.textContent = 'Failed to import CSV. Please check the file format.';
+                errorEl.textContent = t('notifications.error.csvImportFailed');
                 errorEl.style.display = 'block';
             }
         };
@@ -376,7 +386,7 @@ class RosterManager {
     populateStudentSelect() {
         const select = document.getElementById('student-select');
         const rosters = StorageService.getAllRosters();
-        
+
         // Get all unique students from all rosters
         const allStudents = new Set();
         rosters.forEach(roster => {
@@ -386,15 +396,24 @@ class RosterManager {
                 });
             }
         });
-        
+
         // Populate dropdown
-        select.innerHTML = '<option value="">Choose a student to set specific rules...</option>';
+        select.innerHTML = '';
+
+        const placeholderOption = document.createElement('option');
+        placeholderOption.value = '';
+        placeholderOption.dataset.i18n = 'modals.seatingRules.selectStudentPlaceholder';
+        placeholderOption.textContent = t('modals.seatingRules.selectStudentPlaceholder');
+        select.appendChild(placeholderOption);
+
         Array.from(allStudents).sort().forEach(student => {
             const option = document.createElement('option');
             option.value = student;
             option.textContent = student;
             select.appendChild(option);
         });
+
+        applyTranslations();
     }
 
     displayCurrentStudentRules() {
@@ -402,34 +421,35 @@ class RosterManager {
         const allRules = StorageService.getAllStudentRules();
         
         if (Object.keys(allRules).length === 0) {
-            container.innerHTML = '<p class="text-gray-500 text-sm">No student-specific rules configured yet.</p>';
+            container.innerHTML = `<p class="text-gray-500 text-sm">${t('modals.seatingRules.currentRulesEmpty')}</p>`;
             return;
         }
-        
+
         let html = '';
         Object.entries(allRules).forEach(([studentName, rules]) => {
             const ruleDescriptions = [];
-            if (rules.visionNeeds) ruleDescriptions.push('Vision needs');
-            if (rules.behavioral) ruleDescriptions.push('Behavioral considerations');
-            if (rules.needsAttention) ruleDescriptions.push('Needs attention');
-            if (rules.prefersGroup) ruleDescriptions.push('Prefers group work');
-            
+            if (rules.visionNeeds) ruleDescriptions.push(t('modals.seatingRules.studentDescriptions.vision'));
+            if (rules.behavioral) ruleDescriptions.push(t('modals.seatingRules.studentDescriptions.behavior'));
+            if (rules.needsAttention) ruleDescriptions.push(t('modals.seatingRules.studentDescriptions.attention'));
+            if (rules.prefersGroup) ruleDescriptions.push(t('modals.seatingRules.studentDescriptions.group'));
+
             html += `
                 <div class="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
                     <div>
                         <span class="font-medium text-gray-900">${studentName}</span>
                         <div class="text-sm text-gray-600">
-                            ${ruleDescriptions.length > 0 ? ruleDescriptions.join(', ') : 'No specific rules'}
+                            ${ruleDescriptions.length > 0 ? ruleDescriptions.join(', ') : t('modals.seatingRules.studentDescriptions.none')}
                         </div>
                     </div>
                     <button onclick="removeStudentRules('${studentName}')" class="text-red-600 hover:text-red-800 text-sm">
-                        Remove
+                        ${t('modals.seatingRules.remove')}
                     </button>
                 </div>
             `;
         });
-        
+
         container.innerHTML = html;
+        applyTranslations();
     }
 
     closeSeatingRulesModal() {
@@ -470,12 +490,12 @@ class RosterManager {
             };
             
             StorageService.saveSeatingRules(rules);
-            showNotification('Seating rules saved successfully!', 'success');
+            showNotification(t('notifications.success.seatingRulesSaved'), 'success');
             this.closeSeatingRulesModal();
-            
+
         } catch (error) {
             console.error('Failed to save seating rules:', error);
-            document.getElementById('seating-rules-error').textContent = 'Failed to save seating rules. Please try again.';
+            document.getElementById('seating-rules-error').textContent = t('notifications.error.seatingRulesSaveFailed');
             document.getElementById('seating-rules-error').style.display = 'block';
         }
     }
@@ -512,7 +532,7 @@ class RosterManager {
     saveStudentRules() {
         const studentName = document.getElementById('student-select').value;
         if (!studentName) {
-            showNotification('Please select a student first.', 'error');
+            showNotification(t('notifications.error.studentSelectionRequired'), 'error');
             return;
         }
         
@@ -526,23 +546,23 @@ class RosterManager {
             
             StorageService.saveStudentRules(studentName, rules);
             this.displayCurrentStudentRules();
-            showNotification(`Rules saved for ${studentName}!`, 'success');
-            
+            showNotification(t('notifications.success.studentRulesSaved', { name: studentName }), 'success');
+
         } catch (error) {
             console.error('Failed to save student rules:', error);
-            showNotification('Failed to save student rules. Please try again.', 'error');
+            showNotification(t('notifications.error.studentRulesSaveFailed'), 'error');
         }
     }
 
     removeStudentRules(studentName) {
-        if (confirm(`Remove all rules for ${studentName}?`)) {
+        if (confirm(t('prompts.removeStudentRules', { name: studentName }))) {
             try {
                 StorageService.deleteStudentRules(studentName);
                 this.displayCurrentStudentRules();
-                showNotification(`Rules removed for ${studentName}`, 'success');
+                showNotification(t('notifications.success.studentRulesRemoved', { name: studentName }), 'success');
             } catch (error) {
                 console.error('Failed to remove student rules:', error);
-                showNotification('Failed to remove student rules.', 'error');
+                showNotification(t('notifications.error.studentRulesRemoveFailed'), 'error');
             }
         }
     }
@@ -654,4 +674,29 @@ function removeStudentRules(studentName) {
 // Initialize roster manager when script loads
 document.addEventListener('DOMContentLoaded', () => {
     window.rosterManager = new RosterManager();
+});
+
+document.addEventListener('languagechange', () => {
+    if (window.rosterManager) {
+        rosterManager.loadRosterList();
+        rosterManager.populateStudentSelect();
+        rosterManager.displayCurrentStudentRules();
+
+        const rosterModalTitle = document.getElementById('roster-modal-title');
+        if (rosterModalTitle) {
+            rosterModalTitle.textContent = rosterManager.currentEditingId
+                ? t('modals.roster.titleEdit')
+                : t('modals.roster.titleCreate');
+        }
+
+        const csvPreview = document.getElementById('csv-preview');
+        if (csvPreview && csvPreview.childElementCount === 1) {
+            const child = csvPreview.firstElementChild;
+            if (child && child.dataset && child.dataset.i18n === 'modals.importCsv.previewPlaceholder') {
+                applyTranslations();
+            }
+        }
+
+        applyTranslations();
+    }
 });

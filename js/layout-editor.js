@@ -11,11 +11,19 @@ class LayoutEditor {
         this.existingLayoutName = null;
         
         this.initializeEventListeners();
-        
+
         // Set initial tool state after DOM is ready
         setTimeout(() => {
             this.selectTool('seat');
+            this.updateRotationLabel();
         }, 100);
+    }
+
+    updateRotationLabel() {
+        const rotationText = document.getElementById('rotation-text');
+        if (rotationText) {
+            rotationText.textContent = t(`layout.rotation.${this.rotation}`);
+        }
     }
 
     initializeEventListeners() {
@@ -91,8 +99,7 @@ class LayoutEditor {
 
     toggleRotation() {
         this.rotation = this.rotation === 'horizontal' ? 'vertical' : 'horizontal';
-        document.getElementById('rotation-text').textContent = 
-            this.rotation.charAt(0).toUpperCase() + this.rotation.slice(1);
+        this.updateRotationLabel();
     }
 
     getDeskPositions(row, col, rotation) {
@@ -325,7 +332,7 @@ class LayoutEditor {
         document.getElementById('cols-input').value = this.cols;
         
         this.renderGrid();
-        showNotification(`Layout "${layout.name}" loaded successfully!`, 'success');
+        showNotification(t('notifications.success.layoutLoaded', { name: layout.name }), 'success');
     }
 }
 
@@ -349,7 +356,7 @@ function saveLayout() {
     const errorEl = document.getElementById('save-error');
     
     if (!layoutName) {
-        errorEl.textContent = 'Please enter a layout name.';
+        errorEl.textContent = t('notifications.error.layoutNameRequired');
         errorEl.style.display = 'block';
         return;
     }
@@ -361,7 +368,7 @@ function saveLayout() {
         if (existingLayout && layoutEditor.existingLayoutName !== layoutName) {
             // Show confirmation for overwrite
             layoutEditor.existingLayoutName = layoutName;
-            errorEl.innerHTML = `A layout named "${layoutName}" already exists. <strong>Click Save again to overwrite it.</strong>`;
+            errorEl.innerHTML = t('prompts.layoutOverwrite', { name: layoutName });
             errorEl.style.display = 'block';
             return;
         }
@@ -378,11 +385,11 @@ function saveLayout() {
         if (existingLayout) {
             // Update existing layout
             StorageService.updateLayout(existingLayout.id, layoutData);
-            showNotification(`Layout "${layoutName}" updated successfully!`, 'success');
+            showNotification(t('notifications.success.layoutUpdated', { name: layoutName }), 'success');
         } else {
             // Create new layout
             StorageService.saveLayout(layoutData);
-            showNotification(`Layout "${layoutName}" saved successfully!`, 'success');
+            showNotification(t('notifications.success.layoutSaved', { name: layoutName }), 'success');
         }
         
         // Update dropdown in plan editor if present
@@ -394,7 +401,7 @@ function saveLayout() {
         
     } catch (error) {
         console.error('Failed to save layout:', error);
-        errorEl.textContent = 'Failed to save layout. Please try again.';
+        errorEl.textContent = t('notifications.error.layoutSaveFailed');
         errorEl.style.display = 'block';
     }
 }
@@ -408,8 +415,8 @@ function showLoadModal() {
     if (layouts.length === 0) {
         layoutList.innerHTML = `
             <div class="empty-state">
-                <p>No saved layouts found.</p>
-                <p class="empty-state-subtitle">Create and save a layout first.</p>
+                <p>${t('modals.loadLayout.emptyTitle')}</p>
+                <p class="empty-state-subtitle">${t('modals.loadLayout.emptySubtitle')}</p>
             </div>
         `;
     } else {
@@ -423,13 +430,15 @@ function showLoadModal() {
                     </div>
                 </div>
                 <button class="template-load-button button-primary" onclick="loadLayoutById('${layout.id}')">
-                    Load
+                    ${t('layout.actions.loadButton')}
                 </button>
             </div>
         `).join('');
     }
-    
+
     modal.style.display = 'flex';
+
+    applyTranslations();
 }
 
 function closeLoadModal() {
@@ -466,4 +475,20 @@ function updateGridSize() {
 // Initialize layout editor when script loads
 document.addEventListener('DOMContentLoaded', () => {
     window.layoutEditor = new LayoutEditor();
+});
+
+document.addEventListener('languagechange', () => {
+    if (window.layoutEditor) {
+        layoutEditor.updateRotationLabel();
+
+        const saveError = document.getElementById('save-error');
+        if (saveError && saveError.style.display !== 'none' && layoutEditor.existingLayoutName) {
+            saveError.innerHTML = t('prompts.layoutOverwrite', { name: layoutEditor.existingLayoutName });
+        }
+
+        const loadModal = document.getElementById('load-modal');
+        if (loadModal && loadModal.style.display === 'flex') {
+            showLoadModal();
+        }
+    }
 });

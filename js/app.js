@@ -54,13 +54,22 @@ class App {
         const layouts = StorageService.getAllLayouts();
         const select = document.getElementById('layout-select');
         if (select) {
-            select.innerHTML = '<option value="">Select a Layout</option>';
+            select.innerHTML = '';
+
+            const placeholderOption = document.createElement('option');
+            placeholderOption.value = '';
+            placeholderOption.dataset.i18n = 'plan.controls.layoutPlaceholder';
+            placeholderOption.textContent = t('plan.controls.layoutPlaceholder');
+            select.appendChild(placeholderOption);
+
             layouts.forEach(layout => {
                 const option = document.createElement('option');
                 option.value = layout.id;
                 option.textContent = layout.name;
                 select.appendChild(option);
             });
+
+            applyTranslations();
         }
     }
 
@@ -68,13 +77,22 @@ class App {
         const rosters = StorageService.getAllRosters();
         const select = document.getElementById('roster-select');
         if (select) {
-            select.innerHTML = '<option value="">Select a Roster</option>';
+            select.innerHTML = '';
+
+            const placeholderOption = document.createElement('option');
+            placeholderOption.value = '';
+            placeholderOption.dataset.i18n = 'plan.controls.rosterPlaceholder';
+            placeholderOption.textContent = t('plan.controls.rosterPlaceholder');
+            select.appendChild(placeholderOption);
+
             rosters.forEach(roster => {
                 const option = document.createElement('option');
                 option.value = roster.id;
                 option.textContent = roster.name;
                 select.appendChild(option);
             });
+
+            applyTranslations();
         }
     }
 }
@@ -289,6 +307,13 @@ function toggleDarkMode() {
 // Initialize dark mode when DOM is loaded
 document.addEventListener('DOMContentLoaded', () => {
     initializeDarkMode();
+});
+
+document.addEventListener('languagechange', () => {
+    if (app) {
+        app.populateLayoutSelect();
+        app.populateRosterSelect();
+    }
 });
 
 // Export for global access

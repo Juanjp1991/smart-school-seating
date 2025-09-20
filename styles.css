@@ -94,6 +94,32 @@ body {
     box-shadow: var(--shadow-xl);
 }
 
+.language-toggle {
+    position: fixed;
+    top: 1.5rem;
+    right: 6.25rem;
+    z-index: 1001;
+    background: var(--bg-primary);
+    border: 1px solid var(--border-primary);
+    border-radius: var(--border-radius-xl);
+    padding: 0.75rem 1.25rem;
+    font-size: 0.95rem;
+    font-weight: 600;
+    color: var(--text-primary);
+    cursor: pointer;
+    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+    box-shadow: var(--shadow-lg);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+}
+
+.language-toggle:hover {
+    background: var(--bg-accent);
+    border-color: var(--border-secondary);
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-xl);
+}
+
 /* Navigation styles */
 nav {
     background-color: var(--bg-primary);
